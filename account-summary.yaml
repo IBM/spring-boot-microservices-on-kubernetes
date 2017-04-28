@@ -21,7 +21,6 @@ metadata:
   name: account-summary
   labels:
     app: office-space
-    tier: summary
 spec:
   strategy:
     type: Recreate
@@ -29,6 +28,7 @@ spec:
     metadata:
       labels:
         app: office-space
+        tier: summary
     spec:
       containers:
       - image: anthonyamanse/account-summary-office-space:1.0

@@ -19,7 +19,6 @@ metadata:
   name: transaction-generator
   labels:
     app: office-space
-    tier: transaction
 spec:
   strategy:
     type: Recreate
@@ -27,6 +26,7 @@ spec:
     metadata:
       labels:
         app: office-space
+        tier: transaction
     spec:
       containers:
       - image: anthonyamanse/transaction-generator-office-space:1.0

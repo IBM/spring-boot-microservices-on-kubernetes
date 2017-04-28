@@ -19,7 +19,6 @@ metadata:
   name: account-database
   labels:
     app: office-space
-    tier: database
 spec:
   strategy:
     type: Recreate
@@ -27,6 +26,7 @@ spec:
     metadata:
       labels:
         app: office-space
+        tier: database
     spec:
       containers:
       - image: anthonyamanse/account-database-office-space:1.0
