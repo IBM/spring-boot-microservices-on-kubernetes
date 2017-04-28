@@ -5,7 +5,6 @@ metadata:
   labels:
     app: office-space
 spec:
-  type: NodePort
   ports:
     - port: 8080
       protocol: TCP
