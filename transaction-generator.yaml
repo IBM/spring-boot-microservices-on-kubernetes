@@ -11,6 +11,7 @@ spec:
       targetPort: 8080
   selector:
     app: office-space
+    tier: transaction
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -18,6 +19,7 @@ metadata:
   name: transaction-generator
   labels:
     app: office-space
+    tier: transaction
 spec:
   strategy:
     type: Recreate

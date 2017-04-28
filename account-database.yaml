@@ -11,6 +11,7 @@ spec:
       targetPort: 3306
   selector:
     app: office-space
+    tier: database
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -18,6 +19,7 @@ metadata:
   name: account-database
   labels:
     app: office-space
+    tier: database
 spec:
   strategy:
     type: Recreate

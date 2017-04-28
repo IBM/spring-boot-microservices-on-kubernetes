@@ -13,6 +13,7 @@ spec:
       nodePort: 30080
   selector:
     app: office-space
+    tier: summary
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -20,6 +21,7 @@ metadata:
   name: account-summary
   labels:
     app: office-space
+    tier: summary
 spec:
   strategy:
     type: Recreate
