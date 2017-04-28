@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-generator
+  labels:
+    app: office-space
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: office-space
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: transaction-generator
+  labels:
+    app: office-space
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: office-space
+    spec:
+      containers:
+      - image: anthonyamanse/transaction-generator-office-space:1.0
+        name: transaction-generator
+        ports:
+        - containerPort: 8080
+          name: transaction-generator

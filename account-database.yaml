@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-database
+  labels:
+    app: office-space
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: office-space
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: account-database
+  labels:
+    app: office-space
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: office-space
+    spec:
+      containers:
+      - image: anthonyamanse/account-database-office-space:1.0
+        name: account-database
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: account-database
