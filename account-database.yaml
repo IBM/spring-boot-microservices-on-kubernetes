@@ -34,4 +34,4 @@ spec:
           value: password
         ports:
         - containerPort: 3306
-          name: account-database
+          name: db

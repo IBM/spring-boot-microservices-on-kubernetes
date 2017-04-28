@@ -31,4 +31,3 @@ spec:
         name: transaction-generator
         ports:
         - containerPort: 8080
-          name: transaction-generator
