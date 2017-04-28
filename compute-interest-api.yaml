@@ -29,7 +29,7 @@ spec:
         tier: compute
     spec:
       containers:
-      - image: anthonyamanse/compute-interest-api-office-space:1.0
+      - image: anthonyamanse/computer-interest-api-office-space:1.0
         name: compute-interest-api
         ports:
         - containerPort: 8080
