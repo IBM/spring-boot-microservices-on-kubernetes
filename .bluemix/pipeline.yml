@@ -1,0 +1,54 @@
+---
+stages:
+- name: BUILD
+  inputs:
+  - type: git
+    branch: master
+    service: ${SAMPLE_REPO}
+  triggers:
+  - type: commit
+  jobs:
+  - name: Build
+    type: builder
+    artifact_dir: ''
+    build_type: shell
+    script: |-
+      #!/bin/bash
+      bash -n *.sh
+- name: DEPLOY
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build
+    dir_name: null
+  triggers:
+  - type: stage
+  properties:
+  - name: BLUEMIX_USER
+    type: text
+  - name: BLUEMIX_PASSWORD
+    type: secure
+  - name: BLUEMIX_ACCOUNT
+    type: secure
+  - name: CLUSTER_NAME
+    type: text
+  - name: API_KEY
+    type: secure
+  jobs:
+  - name: Deploy
+    type: deployer
+    target:
+      region_id: ${PROD_REGION_ID}
+      organization: ${PROD_ORG_NAME}
+      space: ${PROD_SPACE_NAME}
+      application: Pipeline
+    script: |
+      #!/bin/bash
+      . ./scripts/deploy-to-bluemix/install_bx.sh
+      ./scripts/deploy-to-bluemix/bx_login.sh
+      ./scripts/deploy-to-bluemix/deploy.sh
+hooks:
+- enabled: true
+  label: null
+  ssl_enabled: false
+  url: https://devops-api-integration.stage1.ng.bluemix.net/v1/messaging/webhook/publish
