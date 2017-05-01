@@ -49,16 +49,14 @@ done
 echo "Creating Transaction Generator..."
 kubectl create -f transaction-generator.yaml
 sleep 5s
-}
 
-function getting_ip_port() {
 echo "Getting IP and Port"
 kubectl get nodes
 NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
 if [ -z "$NODEPORT" ]
 then
-    echo "IP or NODEPORT not found"
+    echo "NODEPORT not found"
     exit 1
 fi
 kubectl get pods,svc -l app=office-space
