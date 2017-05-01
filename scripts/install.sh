@@ -40,14 +40,14 @@ done
 
 function initial_setup() {
 echo "Creating MySQL Database..."
-kubectl create -f kubectl create -f account-database.yaml
+kubectl create -f account-database.yaml
 echo "Creating Spring Boot App..."
-kubectl create -f kubectl create -f compute-interest-api.yaml
+kubectl create -f compute-interest-api.yaml
 sleep 5s
 echo "Creating Node.js Frontend..."
-kubectl create -f kubectl create -f account-summary.yaml
+kubectl create -f account-summary.yaml
 echo "Creating Transaction Generator..."
-kubectl create -f kubectl create -f transaction-generator.yaml
+kubectl create -f transaction-generator.yaml
 sleep 5s
 }
 
