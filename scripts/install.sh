@@ -33,7 +33,7 @@ kuber=$(kubectl get pods -l app=office-space)
 while [ ${#kuber} -ne 0 ]
 do
     sleep 5s
-    kubectl get pods -l app=gameon
+    kubectl get pods -l app=office-space
     kuber=$(kubectl get pods -l app=offce-space)
 done
 }
@@ -54,6 +54,7 @@ do
     COUNTUP=$((COUNT+1))
     sed -i s#$COUNT#$COUNTUP# account-summary.yaml
     kubectl apply -f account-summary.yaml
+    echo $?
 done
 
 echo "Creating Transaction Generator..."
@@ -67,7 +68,7 @@ IP=$(kubectl get nodes | grep Ready | awk '{print $1}')
 kubectl get nodes
 NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
-if [ -z IP ] || [ -z NODEPORT]
+if [ -z "$IP" ] || [ -z "$NODEPORT" ]
 then
     echo "IP or NODEPORT not found"
     exit 1
