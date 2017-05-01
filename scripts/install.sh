@@ -46,6 +46,16 @@ kubectl create -f compute-interest-api.yaml
 sleep 5s
 echo "Creating Node.js Frontend..."
 kubectl create -f account-summary.yaml
+while [ $? -ne 0 ]
+do
+    sleep 1s
+    echo "Creating Node.js Frontend failed. Trying to recreate..."
+    COUNT=$(cat account-summary.yaml | grep 30080 | sed -e s#nodePort:## | xargs)
+    COUNTUP=$((COUNT+1))
+    sed -i s#$COUNT#$COUNTUP# account-summary.yaml
+    kubectl apply -f account-summary.yaml
+done
+
 echo "Creating Transaction Generator..."
 kubectl create -f transaction-generator.yaml
 sleep 5s
@@ -71,3 +81,4 @@ install_bluemix_cli
 bluemix_auth
 cluster_setup
 initial_setup
+getting_ip_port
