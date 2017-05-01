@@ -1,0 +1,8 @@
+language: bash
+script: true
+sudo: required
+before_install:
+- bash scripts/install.sh
+group: stable
+dist: precise
+os: linux
