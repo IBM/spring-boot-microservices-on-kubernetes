@@ -73,6 +73,7 @@ then
     echo "IP or NODEPORT not found"
     exit 1
 fi
+kubectl get pods,svc -l app=office-space
 echo "You can now view your account balance at http://$IP:$NODEPORT"
 }
 
