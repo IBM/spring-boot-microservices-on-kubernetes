@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html ng-app="accountSummary">
+  <head>
+    <meta charset="utf-8">
+    <title>Bank Account Balance</title>
+    <base href="/index.html">
+    <meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+    <meta name="keywords" content="docker-compose, docker, stack">
+    <meta name="author" content="IBM">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body ng-controller="accountBalanceCtrl" >
+
+    <div id="accountSummary">
+      <div id="accountHeader">
+        <span>Account Balance</span>
+      </div>
+      <div id="balance">
+        <span>{{total | currency}}</span>
+      </div>
+    </div>
+    <script src="socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

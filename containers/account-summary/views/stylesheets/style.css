@@ -1,0 +1,32 @@
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,700,600);
+
+*{
+  box-sizing:border-box;
+}
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family: 'Open Sans';
+}
+body{
+  opacity:0;
+  transition: all 1s linear;
+}
+
+#accountSummary{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#balance{
+  color: green;
+  text-align: center;
+  font-size: 4em;
+}
+
+#accountHeader{
+  font-size: 2em;
+}
