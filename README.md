@@ -49,11 +49,11 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
     ```
     * **B. Use MySQL in container**
     **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
-```bash
-$ kubectl create -f account-database.yaml
-service "account-database" created
-deployment "account-database" created
-```
+	```bash
+	$ kubectl create -f account-database.yaml
+	service "account-database" created
+	deployment "account-database" created
+	```
 
 # 2. Create the **Spring Boot** App:
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
