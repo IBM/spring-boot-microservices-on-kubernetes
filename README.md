@@ -36,7 +36,7 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
     ![images](images/mysqlservice.png)
 	You will need to modify **both** `compute-interest-api.yaml` and `account-summary.yaml` files. You need to modify their environment variables to use your MySQL database in Bluemix:
     ```yaml
-    compute-interest-api.yaml AND account-summary.yaml
+    // compute-interest-api.yaml AND account-summary.yaml
     env:
         - name: OFFICESPACE_MYSQL_DB_USER
           value: '<your-username>'
@@ -46,6 +46,12 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
           value: '<Your-database-host>'
         - name: OFFICESPACE_MYSQL_DB_PORT
           value: '<your-port-number>'
+    ```
+    **IMPORTANT:** You will also need to put in `'bluemix'` in the environment `MYSQL_ENVIRONMENT` of compute-interest-api.yaml. This would make the **Spring Boot app of compute-interest-api** to select the right configuration for bluemix
+    ```yaml
+    // compute-interest-api.yaml
+        - name: MYSQL_ENVIRONMENT
+          value: 'bluemix'
     ```
     * **B. Use MySQL in container**
     **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`

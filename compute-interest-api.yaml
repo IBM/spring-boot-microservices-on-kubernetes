@@ -41,5 +41,7 @@ spec:
           value: ''
         - name: OFFICESPACE_MYSQL_DB_PORT
           value: ''
+        - name: MYSQL_ENVIRONMENT
+          value: ''
         ports:
         - containerPort: 8080
