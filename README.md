@@ -23,7 +23,7 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 ## Steps
 1. [Create the Database services](#1-create-the-database-services)
 	- 1.1 [Use MySQL in bluemix](#11-use-bluemix-mysql)
-	- 1.2 [Use MySQL in a container within the cluster](#12-usemysql-in-container)
+	- 1.2 [Use MySQL in a container within the cluster](#12-use-mysql-in-container)
 2. [Create the Spring Boot App](#1-create-the-spring-boot-app)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
