@@ -75,6 +75,8 @@ then
 fi
 kubectl get pods,svc -l app=office-space
 echo "You can now view your account balance at http://$IP:$NODEPORT"
+echo "Everything seems to be working fine..."
+echo "Travis has finish its build. Cleaning up..."
 }
 
 
@@ -84,3 +86,4 @@ bluemix_auth
 cluster_setup
 initial_setup
 getting_ip_port
+cluster_setup
