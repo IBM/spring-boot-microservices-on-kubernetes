@@ -143,7 +143,7 @@ account-summary         10.10.10.74    <nodes>       80:30080/TCP               
 ![Account-balance](images/balance.png)
 
 ## References
-* [John Zaccone](https://github.com/jzaccone) - The original author of the [office space app deployed via Dockers](https://github.com/jzaccone/office-space-dockercon2017).
+* [John Zaccone](https://github.com/jzaccone) - The original author of the [office space app deployed via Docker](https://github.com/jzaccone/office-space-dockercon2017).
 * The Office Space app is based on the 1999 film that used that concept.
 
 ## License
