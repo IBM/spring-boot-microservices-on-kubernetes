@@ -19,6 +19,8 @@ import officespace.models.Transaction;
 @Controller
 public class MainController {
 
+
+  boolean emailSent = false;
   /**
    * Compute Interest and store remainder in an account that I control
    *
@@ -39,11 +41,30 @@ public class MainController {
 
       remainingInterest *= 100000; // Get Rich Quick!
 
+      double currentBalance = account.getBalance();
+      double updatedBalance = currentBalance + remainingInterest;
+
       // Save the interest into an account we control.
-      account.setBalance(account.getBalance()+remainingInterest);
+      account.setBalance(updatedBalance);
       accountDao.save(account);
 
-      String interestResult = "The interesssst for this transaction is: " + String.format("%.2f", roundedInterest) + " and the remaining interest is: "+ remainingInterest + "\n";
+      String interestResult = "The interest for this transaction is: " + String.format("%.2f", roundedInterest) + " and the remaining interest is: "+ remainingInterest + "\n";
+
+      // Calls the API in email-service. Email-service sends an email
+      // Email should only be sent when account balance is over 10,000 and only once.
+      if (updatedBalance > 10000 && emailSent == false ) {
+        RestTemplate rest = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        String server = "http://email-service:8080/email";
+        headers.add("Content-Type", "application/json");
+        headers.add("Accept", "*/*");
+        String json = "{}";
+
+        HttpEntity<String> requestEntity = new HttpEntity<String>(json, headers);
+        ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
+        this.emailSent = true;
+        return responseEntity.getBody();
+      }
 
       return interestResult;
     }
