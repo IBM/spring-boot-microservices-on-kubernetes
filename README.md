@@ -56,7 +56,7 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
         value: 'bluemix'
   ```
 ## 1.2 Use MySQL in container
-  **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
+	**NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
 	```bash
 	$ kubectl create -f account-database.yaml
 	service "account-database" created
