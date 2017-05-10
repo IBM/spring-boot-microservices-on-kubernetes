@@ -89,12 +89,12 @@ If you want to modify the Spring Boot app, you will need to do it before buildin
         imagePullPolicy: Always
     ```
 * 4. Deploy
-```bash
-$ kubectl create -f compute-interest-api.yaml
-service "compute-interest-api" created
-deployment "compute-interest-api" created
-```
-> Note: The compute-interest-api multiplies the fraction of the pennies to x10,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 10000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
+	```bash
+	$ kubectl create -f compute-interest-api.yaml
+	service "compute-interest-api" created
+	deployment "compute-interest-api" created
+	```
+	> Note: The compute-interest-api multiplies the fraction of the pennies to x10,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 10000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
 
 # 3. Create the Frontend service
 The UI is a Node.js app that shows the total account balance.
