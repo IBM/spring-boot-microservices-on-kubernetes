@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-service
+  labels:
+    app: office-space
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: office-space
+    tier: email
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: email-service
+  labels:
+    app: office-space
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: office-space
+        tier: email
+    spec:
+      containers:
+      - image: anthonyamanse/email-service
+        imagePullPolicy: Always
+        name: email-service
+        env:
+        - name: GMAIL_SENDER_USER
+          value: 'username@gmail.com'
+        - name: GMAIL_SENDER_PASSWORD
+          value: 'password'
+        - name: EMAIL_RECEIVER
+          value: 'sendTo@gmail.com'
+        ports:
+        - containerPort: 8080

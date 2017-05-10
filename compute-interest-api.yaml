@@ -29,7 +29,7 @@ spec:
         tier: compute
     spec:
       containers:
-      - image: anthonyamanse/compute-interest-api:3.0
+      - image: anthonyamanse/compute-interest-api-with-email
         imagePullPolicy: Always
         name: compute-interest-api
         env:
