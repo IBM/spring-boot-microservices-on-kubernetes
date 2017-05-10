@@ -65,7 +65,7 @@ deployment "account-database" created
 
 # 2. Create the Spring Boot Apps:
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
-If you want to modify the Spring Boot app, you will need to do it before building the Java project and the docker image.
+If you want to modify the Spring Boot apps, you will need to do it before building the Java project and the docker image.
 
 The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
 * 1. Build the images
