@@ -5,7 +5,7 @@ This app mimicks the fictitious app idea from Michael Bolton in the movie "Offic
 
 The app takes advantage of a financial program that computes interest for transactions by diverting fractions of a cent that are usually rounded off into a seperate bank account.
 
-The app will be deployed on Kubernetes. The app uses a Java 8/Spring Boot webserver that computes the interest then takes the fraction of the pennies to a database. The frontend uses a Node.js app that shows the current account balance accumulated by the Spring Boot app. The backend uses a MySQL database to store the account balance.
+The app will be deployed on Kubernetes. The app uses a Java 8/Spring Boot webserver that computes the interest then takes the fraction of the pennies to a database. Another Spring Boot app is an email notification service. It sends email when the account balance reach more than $50,000. It is triggered by the Spring Boot webserver that computes the interest. The frontend uses a Node.js app that shows the current account balance accumulated by the Spring Boot app. The backend uses a MySQL database to store the account balance.
 
 ## Prerequisite
 
