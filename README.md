@@ -103,14 +103,14 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
       containers:
       - image: registry.ng.bluemix.net/<namespace>/email-service # replace with your image name
   ```
-* 4. Deploy
+* 4. Deploy the Spring Boot Apps
 	```bash
 	$ kubectl create -f compute-interest-api.yaml
 	service "compute-interest-api" created
 	deployment "compute-interest-api" created
 	```
 	```bash
-	kubectl create -f email-service.yaml
+	$ kubectl create -f email-service.yaml
 	service "email-service" created
 	deployment "email-service" created
 	```
