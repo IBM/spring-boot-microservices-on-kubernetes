@@ -24,7 +24,7 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 1. [Create the Database services](#1-create-the-database-services)
 	- 1.1 [Use MySQL in bluemix](#11-use-bluemix-mysql)
 	- 1.2 [Use MySQL in a container within the cluster](#12-use-mysql-in-container)
-2. [Create the Spring Boot App](#1-create-the-spring-boot-app)
+2. [Create the Spring Boot Apps](#1-create-the-spring-boot-apps)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your App](#5-access-your-app)
@@ -32,38 +32,38 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
 * There are two ways to create the **MySQL database** backend *(you only need to do one of them)*:
-## 1.1 Use Bluemix MySQL**
-    Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
-    Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
-    ![images](images/mysqlservice.png)
+## 1.1 Use Bluemix MySQL
+  Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
+  Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
+  ![images](images/mysqlservice.png)
 	You will need to modify **both** `compute-interest-api.yaml` and `account-summary.yaml` files. You need to modify their environment variables to use your MySQL database in Bluemix:
-    ```yaml
-    // compute-interest-api.yaml AND account-summary.yaml
-    env:
-        - name: OFFICESPACE_MYSQL_DB_USER
-          value: '<your-username>'
-        - name: OFFICESPACE_MYSQL_DB_PASSWORD
-          value: '<Your-database-password>'
-        - name: OFFICESPACE_MYSQL_DB_HOST
-          value: '<Your-database-host>'
-        - name: OFFICESPACE_MYSQL_DB_PORT
-          value: '<your-port-number>'
-    ```
-    **IMPORTANT:** You will also need to put in `'bluemix'` in the environment `MYSQL_ENVIRONMENT` of compute-interest-api.yaml. This would make the **Spring Boot app of compute-interest-api** to select the right configuration for bluemix
-    ```yaml
-    // compute-interest-api.yaml
-        - name: MYSQL_ENVIRONMENT
-          value: 'bluemix'
-    ```
-## 1.2 Use MySQL in container**
-    **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
+  ```yaml
+  // compute-interest-api.yaml AND account-summary.yaml
+  env:
+      - name: OFFICESPACE_MYSQL_DB_USER
+        value: '<your-username>'
+      - name: OFFICESPACE_MYSQL_DB_PASSWORD
+        value: '<Your-database-password>'
+      - name: OFFICESPACE_MYSQL_DB_HOST
+        value: '<Your-database-host>'
+      - name: OFFICESPACE_MYSQL_DB_PORT
+        value: '<your-port-number>'
+  ```
+  **IMPORTANT:** You will also need to put in `'bluemix'` in the environment `MYSQL_ENVIRONMENT` of compute-interest-api.yaml. This would make the **Spring Boot app of compute-interest-api** to select the right configuration for bluemix
+  ```yaml
+  // compute-interest-api.yaml
+      - name: MYSQL_ENVIRONMENT
+        value: 'bluemix'
+  ```
+## 1.2 Use MySQL in container
+  **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
 	```bash
 	$ kubectl create -f account-database.yaml
 	service "account-database" created
 	deployment "account-database" created
 	```
 
-# 2. Create the **Spring Boot** App:
+# 2. Create the Spring Boot Apps:
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
 If you want to modify the Spring Boot app, you will need to do it before building the Java project and the docker image.
 * 1. Build the image
