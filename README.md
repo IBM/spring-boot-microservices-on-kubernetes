@@ -21,7 +21,7 @@ If you want to deploy the Office Space app directly to Bluemix, click on 'Deploy
 Please follow the [Toolchain instructions](https://github.com/IBM/container-journey-template/blob/master/Toolchain_Instructions.md) to complete your toolchain and pipeline.
 
 ## Steps
-1. [Create the Database services](#1-create-the-database-services)
+1. [Create the Database service](#1-create-the-database-service)
 	- 1.1 [Use MySQL in bluemix](#11-use-bluemix-mysql)
 	- 1.2 [Use MySQL in a container within the cluster](#12-use-mysql-in-container)
 2. [Create the Spring Boot Apps](#1-create-the-spring-boot-apps)
@@ -31,7 +31,7 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
-* There are two ways to create the **MySQL database** backend *(you only need to do one of them)*:
+* There are two ways to create the **MySQL database** backend *(you only need to do one of them)*: **Use Bluemix MySQL** *OR* **create a MySQL service in your cluster.**
 ## 1.1 Use Bluemix MySQL
   Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
   Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
@@ -81,7 +81,7 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
 	$ docker build -t registry.ng.bluemix.net/<namespace>/email-service .
 	```
 	 *We will be using Bluemix container registry to push images (hence the image naming), but the images [can be pushed in Docker hub](https://docs.docker.com/datacenter/dtr/2.2/guides/user/manage-images/pull-and-push-images) as well.*
-* 2. Push the image:
+* 2. Push the images:
 	> Note: This is being pushed in the Bluemix Container Registry.
 
 	If you plan to use Bluemix Container Registry, you will need to setup your account first. Follow the tutorial [here](https://developer.ibm.com/recipes/tutorials/getting-started-with-private-registry-hosted-by-ibm-bluemix/).
@@ -94,11 +94,11 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
 	```
 * 3. Modify `compute-interest-api.yaml` and `email-service.yaml` to use your image
 	```yaml
-  // compute-interest-api
+  // compute-interest-api.yaml
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
-  // email-service
+  // email-service.yaml
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/email-service # replace with your image name
@@ -108,6 +108,11 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
 	$ kubectl create -f compute-interest-api.yaml
 	service "compute-interest-api" created
 	deployment "compute-interest-api" created
+	```
+	```bash
+	kubectl create -f email-service.yaml
+	service "email-service" created
+	deployment "email-service" created
 	```
 	> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
 
