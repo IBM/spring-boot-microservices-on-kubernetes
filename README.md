@@ -103,6 +103,16 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
       containers:
       - image: registry.ng.bluemix.net/<namespace>/email-service # replace with your image name
   ```
+	You will also need to modify the **environment variables** in the `email-service.yaml`:
+	```yaml
+    env:
+    - name: GMAIL_SENDER_USER 
+       value: 'username@gmail.com' # change this to the gmail that will send the email
+    - name: GMAIL_SENDER_PASSWORD
+       value: 'password' # change this to the the password of the gmail above
+    - name: EMAIL_RECEIVER
+       value: 'sendTo@gmail.com' # change this to the email of the receiver
+	```
 * 4. Deploy the Spring Boot Apps
 	```bash
 	$ kubectl create -f compute-interest-api.yaml
