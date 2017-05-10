@@ -66,35 +66,50 @@ deployment "account-database" created
 # 2. Create the Spring Boot Apps:
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
 If you want to modify the Spring Boot app, you will need to do it before building the Java project and the docker image.
-* 1. Build the image
+
+The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
+* 1. Build the images
+
+	After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
 	```bash
-    $ cd containers/compute-interest-api
-    $ mvn package
-    ```
-    After Maven has successfully built the Java project, you will need to build the docker image using the provided dockerfile. *We are using Bluemix container registry to push images, but the images [can be pushed in Docker hub](https://docs.docker.com/datacenter/dtr/2.2/guides/user/manage-images/pull-and-push-images) as well.*
-    ```bash
-    $ docker build -t registry.ng.bluemix.net/<namespace>/compute-interest-api .
-    ```
+	Go to containers/compute-interest-api
+	$ mvn package
+	$ docker build -t registry.ng.bluemix.net/<namespace>/compute-interest-api .
+
+	Go to containers/email-office-space
+	$ mvn package
+	$ docker build -t registry.ng.bluemix.net/<namespace>/email-service .
+	```
+	 *We will be using Bluemix container registry to push images (hence the image naming), but the images [can be pushed in Docker hub](https://docs.docker.com/datacenter/dtr/2.2/guides/user/manage-images/pull-and-push-images) as well.*
 * 2. Push the image:
 	> Note: This is being pushed in the Bluemix Container Registry.
 
+	If you plan to use Bluemix Container Registry, you will need to setup your account first. Follow the tutorial [here](https://developer.ibm.com/recipes/tutorials/getting-started-with-private-registry-hosted-by-ibm-bluemix/).
+
+	You can also push it in [Docker Hub](https://hub.docker.com).
+
 	```bash
-    $ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api .
-    ```
-* 3. Modify `compute-interest-api.yaml` to use your image
+	$ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api
+	$ docker push registry.ng.bluemix.net/<namespace>/email-service
+	```
+* 3. Modify `compute-interest-api.yaml` and `email-service.yaml` to use your image
 	```yaml
+  // compute-interest-api
     spec:
       containers:
-      - image: registry.ng.bluemix.net/anthonyamanse/compute-interest-api ## replace this one with your image name
-        imagePullPolicy: Always
-    ```
+      - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
+  // email-service
+    spec:
+      containers:
+      - image: registry.ng.bluemix.net/<namespace>/email-service # replace with your image name
+  ```
 * 4. Deploy
 	```bash
 	$ kubectl create -f compute-interest-api.yaml
 	service "compute-interest-api" created
 	deployment "compute-interest-api" created
 	```
-	> Note: The compute-interest-api multiplies the fraction of the pennies to x10,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 10000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
+	> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
 
 # 3. Create the Frontend service
 The UI is a Node.js app that shows the total account balance.
