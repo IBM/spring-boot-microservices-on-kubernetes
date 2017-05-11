@@ -128,7 +128,7 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
 
 # 3. Create the Frontend service
 The UI is a Node.js app that shows the total account balance.
-**If you are using a MySQL database in Bluemix, don't forget to fill in the values of the environment variables in `account-summary.yaml` file, otherwise leave them blank. This was done in [Step 1](#1-create-the-database-services).**
+**If you are using a MySQL database in Bluemix, don't forget to fill in the values of the environment variables in `account-summary.yaml` file, otherwise leave them blank. This was done in [Step 1](#1-create-the-database-service).**
 
 
 * Create the **Node.js** frontend:
