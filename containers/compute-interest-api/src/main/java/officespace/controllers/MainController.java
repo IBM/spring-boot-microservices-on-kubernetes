@@ -1,11 +1,16 @@
 package officespace.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import officespace.models.Account;
 import officespace.models.AccountDao;
@@ -51,8 +56,8 @@ public class MainController {
       String interestResult = "The interest for this transaction is: " + String.format("%.2f", roundedInterest) + " and the remaining interest is: "+ remainingInterest + "\n";
 
       // Calls the API in email-service. Email-service sends an email
-      // Email should only be sent when account balance is over 10,000 and only once.
-      if (updatedBalance > 10000 && emailSent == false ) {
+      // Email should only be sent when account balance is over $50,000 and only once.
+      if (updatedBalance > 50000 && emailSent == false ) {
         RestTemplate rest = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         String server = "http://email-service:8080/email";
