@@ -32,7 +32,7 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
 
-* There are two ways to create the **MySQL database** backend: *Use MySQL in a container in your cluster.** *OR* **Use Bluemix MySQL** 
+* There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL** 
 
 ## 1.1 Use MySQL in container
 **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
