@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/IBM/office-space.svg?branch=master)](https://travis-ci.org/IBM/office-space)
-# office-space
+# OfficeSpace: Spring Boot Microservices Application on Kubernetes
 
 This app mimicks the fictitious app idea from Michael Bolton in the movie "Office Space".
 
