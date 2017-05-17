@@ -60,7 +60,7 @@ public class MainController {
       if (updatedBalance > 50000 && emailSent == false ) {
         RestTemplate rest = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        String server = "http://email-service:8080/email";
+        String server = "http://send-notification:8080/email";
         headers.add("Content-Type", "application/json");
         headers.add("Accept", "*/*");
         String json = "{}";

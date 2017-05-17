@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,11 @@ public class TriggerEmail {
 	@Value("${trigger.mail.receiver}")
 	private String receiver;
 	
+	@Value("${trigger.slack.url}")
+	private String slack_url;
+
+	@Value("${trigger.slack.message}")
+	private String slack_message;
 
 	@RequestMapping(path = "/email", method = RequestMethod.POST)
 	private String send() {
@@ -40,8 +44,21 @@ public class TriggerEmail {
 			helper.setSubject("Office-Space Notification");
 			helper.setText("Account Balance is now over $50,000");
 			mailSender.send(mail);
+
+			if (!slack_url.isEmpty()) {
+				RestTemplate rest = new RestTemplate();
+				HttpHeaders headers = new HttpHeaders();
+				String server = slack_url;
+				headers.add("Content-Type", "application/json");
+				headers.add("Accept", "*/*");
+				String json = "{\"text\": \"" + slack_message + "\"}";
+
+				HttpEntity<String> requestEntity = new HttpEntity<String>(json, headers);
+				ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
+			}
+	        
 			return "{\"message\": \"OK\"}";
-		} catch (MessagingException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "{\"message\": \"Error\"}";
