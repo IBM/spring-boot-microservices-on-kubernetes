@@ -5,7 +5,7 @@ Spring Boot is one of the popular Java microservices framework. Spring Cloud has
 
 In this code we demonstrate how a simple Spring Boot application can be deployed on top of Kuberneets. This application, Office Space, mimicks the fictitious app idea from Michael Bolton in the movie "Office Space". The app takes advantage of a financial program that computes interest for transactions by diverting fractions of a cent that are usually rounded off into a seperate bank account.
 
-The application uses a Java 8/Spring Boot microservice that computes the interest then takes the fraction of the pennies to a database. Another Spring Boot microservice is an email notification service. It sends email when the account balance reach more than $50,000. It is triggered by the Spring Boot webserver that computes the interest. The frontend uses a Node.js app that shows the current account balance accumulated by the Spring Boot app. The backend uses a MySQL database to store the account balance.
+The application uses a Java 8/Spring Boot microservice that computes the interest then takes the fraction of the pennies to a database. Another Spring Boot microservice is the notification service. It sends email when the account balance reach more than $50,000. It is triggered by the Spring Boot webserver that computes the interest. The frontend uses a Node.js app that shows the current account balance accumulated by the Spring Boot app. The backend uses a MySQL database to store the account balance.
 
 ## Prerequisite
 
@@ -24,10 +24,10 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 1. [Create the Database service](#1-create-the-database-service)
 	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
 	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
-2. [Create the Spring Boot Apps](#1-create-the-spring-boot-apps)
+2. [Create the Spring Boot Microservices](#1-create-the-spring-boot-microservices)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
-5. [Access Your App](#5-access-your-app)
+5. [Access Your Application](#5-access-your-application)
 
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
@@ -66,11 +66,12 @@ deployment "account-database" created
         value: 'bluemix'
   ```
 
-# 2. Create the Spring Boot Apps:
+# 2. Create the Spring Boot Microservices:
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
 If you want to modify the Spring Boot apps, you will need to do it before building the Java project and the docker image.
 
-The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
+The Spring Boot Microservices are the **Compute-Interest-API** and the **Email-Service**.
+
 * 1. Build the images
 
 	After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
@@ -116,7 +117,7 @@ The Spring Boot Apps are the **Compute-Interest-API** and the **Email-Service**.
     - name: EMAIL_RECEIVER
        value: 'sendTo@gmail.com' # change this to the email of the receiver
 	```
-* 4. Deploy the Spring Boot Apps
+* 4. Deploy the Spring Boot Microservices
 	```bash
 	$ kubectl create -f compute-interest-api.yaml
 	service "compute-interest-api" created
@@ -150,7 +151,7 @@ service "transaction-generator" created
 deployment "transaction-generator" created
 ```
 
-# 5. Access Your App
+# 5. Access Your Application
 You can access your app publicly through your Cluster IP and the NodePort. The NodePort should be **30080**.
 
 * To find your IP:
