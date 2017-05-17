@@ -22,8 +22,8 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 
 ## Steps
 1. [Create the Database service](#1-create-the-database-service)
-	- 1.1 [Use MySQL in bluemix](#11-use-bluemix-mysql)
-	- 1.2 [Use MySQL in a container within the cluster](#12-use-mysql-in-container)
+	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
+	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
 2. [Create the Spring Boot Apps](#1-create-the-spring-boot-apps)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
@@ -31,8 +31,18 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
-* There are two ways to create the **MySQL database** backend *(you only need to do one of them)*: **Use Bluemix MySQL** *OR* **create a MySQL service in your cluster.**
-## 1.1 Use Bluemix MySQL
+
+* There are two ways to create the **MySQL database** backend: *Use MySQL in a container in your cluster.** *OR* **Use Bluemix MySQL** 
+
+## 1.1 Use MySQL in container
+**NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
+```bash
+$ kubectl create -f account-database.yaml
+service "account-database" created
+deployment "account-database" created
+```
+
+## 1.2 Use Bluemix MySQL
   Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
   Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
   ![images](images/mysqlservice.png)
@@ -55,13 +65,6 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
       - name: MYSQL_ENVIRONMENT
         value: 'bluemix'
   ```
-## 1.2 Use MySQL in container
-**NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
-```bash
-$ kubectl create -f account-database.yaml
-service "account-database" created
-deployment "account-database" created
-```
 
 # 2. Create the Spring Boot Apps:
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
