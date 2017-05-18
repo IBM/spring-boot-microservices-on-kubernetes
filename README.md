@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/IBM/office-space.svg?branch=master)](https://travis-ci.org/IBM/office-space)
 # OfficeSpace: Spring Boot Microservices Application on Kubernetes
 
-Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications. 
+Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications.
 
 In this code we demonstrate how a simple Spring Boot application can be deployed on top of Kuberneets. This application, Office Space, mimicks the fictitious app idea from Michael Bolton in the movie "Office Space". The app takes advantage of a financial program that computes interest for transactions by diverting fractions of a cent that are usually rounded off into a seperate bank account.
 
@@ -32,7 +32,7 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
 
-* There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL** 
+* There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL**
 
 ## 1.1 Use MySQL in container
 **NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
@@ -70,7 +70,7 @@ deployment "account-database" created
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
 If you want to modify the Spring Boot apps, you will need to do it before building the Java project and the docker image.
 
-The Spring Boot Microservices are the **Compute-Interest-API** and the **Email-Service**.
+The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
 * 1. Build the images
 
@@ -82,7 +82,7 @@ The Spring Boot Microservices are the **Compute-Interest-API** and the **Email-S
 
 	Go to containers/email-office-space
 	$ mvn package
-	$ docker build -t registry.ng.bluemix.net/<namespace>/email-service .
+	$ docker build -t registry.ng.bluemix.net/<namespace>/send-notification .
 	```
 	 *We will be using Bluemix container registry to push images (hence the image naming), but the images [can be pushed in Docker hub](https://docs.docker.com/datacenter/dtr/2.2/guides/user/manage-images/pull-and-push-images) as well.*
 * 2. Push the images:
@@ -94,23 +94,23 @@ The Spring Boot Microservices are the **Compute-Interest-API** and the **Email-S
 
 	```bash
 	$ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api
-	$ docker push registry.ng.bluemix.net/<namespace>/email-service
+	$ docker push registry.ng.bluemix.net/<namespace>/send-notification
 	```
-* 3. Modify `compute-interest-api.yaml` and `email-service.yaml` to use your image
+* 3. Modify `compute-interest-api.yaml` and `send-notification.yaml` to use your image
 	```yaml
   // compute-interest-api.yaml
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
-  // email-service.yaml
+  // send-notification.yaml
     spec:
       containers:
-      - image: registry.ng.bluemix.net/<namespace>/email-service # replace with your image name
+      - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
   ```
-	You will also need to modify the **environment variables** in the `email-service.yaml`:
+	You will also need to modify the **environment variables** in the `send-notification.yaml`:
 	```yaml
     env:
-    - name: GMAIL_SENDER_USER 
+    - name: GMAIL_SENDER_USER
        value: 'username@gmail.com' # change this to the gmail that will send the email
     - name: GMAIL_SENDER_PASSWORD
        value: 'password' # change this to the the password of the gmail above
@@ -124,9 +124,9 @@ The Spring Boot Microservices are the **Compute-Interest-API** and the **Email-S
 	deployment "compute-interest-api" created
 	```
 	```bash
-	$ kubectl create -f email-service.yaml
-	service "email-service" created
-	deployment "email-service" created
+	$ kubectl create -f send-notification.yaml
+	service "send-notification" created
+	deployment "send-notification" created
 	```
 	> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
 
@@ -175,6 +175,57 @@ account-summary         10.10.10.74    <nodes>       80:30080/TCP               
 ```
 * On your browser, go to `http://<your-cluster-IP>:30080`
 ![Account-balance](images/balance.png)
+
+## Using OpenWhisk API with Slack Notification
+
+Requirements for this sections:
+* [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
+* **Bluemix Account** to use [OpenWhisk](https://console.ng.bluemix.net/openwhisk/).
+
+
+1. Create an OpenWhisk Action
+	* Click on [Developer in your Browser](https://console.ng.bluemix.net/openwhisk/) and click on **Create an Action**
+	![Create-Action](images/developBrowser.png)
+
+	Then click
+	![Create-Action](images/createAction.png)
+
+	![Create-Action](images/action.png)
+	* Copy the [sendSlack.js]() for sending a Slack Notification then save it
+	![Copy-Script](images/copyScript.png)
+	* Set your [Slack Webhook URL](https://api.slack.com/incoming-webhooks) as default parameter for the action then save it
+	Click on View Action Details
+	![Set-Default](images/viewAction.png)
+	Then set `url` to `https://< Your Slack Team's incoming webhook url>`
+	![Set-Default](images/defaultParameters.png)
+
+2. Create Managed API
+	* From the API tab, Create Managed API
+	![Managed-API](images/createManaged.png)
+
+	Then set an API name
+	![Managed-API](images/api.png)
+	* Create an operation. Make it a **POST request** and **select the Action** you just created.
+	![Create-Operation](images/createOperation.png)
+
+	![Create-Operation](images/operation.png)
+	* Go to the API Explorer section on your managed API and take note of the URL
+	![API-Url](images/apiUrl.png)
+3. Modify `send-notification.yaml`
+	* Fill in the necessary values on the environment variables
+	```yaml
+  - name: OPENWHISK_API_URL
+    value: 'openwhisk api url' # enter the url of the API you just created
+  - name: SLACK_MESSAGE
+    value: 'Your balance is over $50,000.00' # set the slack message
+	```
+4. Deploy your Application again
+
+
+## Troubleshooting
+* To start over, delete everything: `kubectl delete svc,deploy -l app=office-space`
+* To restart the balance to 0, delete **compute-interest-api** deployment: `kubectl delete -f compute-interest-api.yaml`
+
 
 ## References
 * [John Zaccone](https://github.com/jzaccone) - The original author of the [office space app deployed via Docker](https://github.com/jzaccone/office-space-dockercon2017).

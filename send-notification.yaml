@@ -31,7 +31,7 @@ spec:
       containers:
       - image: anthonyamanse/send-notification:1.0
         imagePullPolicy: Always
-        name: email-service
+        name: send-notification
         env:
         - name: GMAIL_SENDER_USER
           value: 'username@gmail.com'
