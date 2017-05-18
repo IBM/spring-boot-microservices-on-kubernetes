@@ -187,11 +187,11 @@ Requirements for this sections:
 	* Click on [Developer in your Browser](https://console.ng.bluemix.net/openwhisk/) and click on **Create an Action**
 	![Create-Action](images/developBrowser.png)
 
-	Then click
+	* Then click on
 	![Create-Action](images/createAction.png)
 
 	![Create-Action](images/action.png)
-	* Copy the [sendSlack.js]() for sending a Slack Notification then save it
+	* Copy the [sendSlack.js](/sendSlack.js) for sending a Slack Notification then save it
 	![Copy-Script](images/copyScript.png)
 	* Set your [Slack Webhook URL](https://api.slack.com/incoming-webhooks) as default parameter for the action then save it
 	Click on View Action Details
@@ -214,10 +214,10 @@ Requirements for this sections:
 3. Modify `send-notification.yaml`
 	* Fill in the necessary values on the environment variables
 	```yaml
-  - name: OPENWHISK_API_URL
-    value: 'openwhisk api url' # enter the url of the API you just created
-  - name: SLACK_MESSAGE
-    value: 'Your balance is over $50,000.00' # set the slack message
+	- name: OPENWHISK_API_URL
+		value: 'openwhisk api url' # enter the url of the API you just created
+	- name: SLACK_MESSAGE
+		value: 'Your balance is over $50,000.00' # set the slack message
 	```
 4. Deploy your Application again
 
