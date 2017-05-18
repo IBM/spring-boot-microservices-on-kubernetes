@@ -203,12 +203,12 @@ Requirements for this sections:
 	* From the API tab, Create Managed API
 	![Managed-API](images/createManaged.png)
 
-	Then set an API name
+	* Then set an API name
 	![Managed-API](images/api.png)
 	* Create an operation. Make it a **POST request** and **select the Action** you just created.
 	![Create-Operation](images/createOperation.png)
 
-	![Create-Operation](images/operation.png)
+		![Create-Operation](images/operation.png)
 	* Go to the API Explorer section on your managed API and take note of the URL
 	![API-Url](images/apiUrl.png)
 3. Modify `send-notification.yaml`
@@ -219,7 +219,7 @@ Requirements for this sections:
 	- name: SLACK_MESSAGE
 	  value: 'Your balance is over $50,000.00' # set the slack message
 	```
-4. Deploy your Application again
+4. Redeploy your Application
 
 
 ## Troubleshooting
