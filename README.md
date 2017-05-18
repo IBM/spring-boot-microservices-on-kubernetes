@@ -176,7 +176,7 @@ account-summary         10.10.10.74    <nodes>       80:30080/TCP               
 * On your browser, go to `http://<your-cluster-IP>:30080`
 ![Account-balance](images/balance.png)
 
-## Using OpenWhisk API with Slack Notification
+# Using OpenWhisk Action with Slack Notification
 
 Requirements for this sections:
 * [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
