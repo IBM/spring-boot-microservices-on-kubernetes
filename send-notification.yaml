@@ -39,9 +39,11 @@ spec:
           value: 'password'
         - name: EMAIL_RECEIVER
           value: 'sendTo@gmail.com'
-        - name: OPENWHISK_API_URL
-          value: 'openwhisk api url'
+        - name: OPENWHISK_API_URL_SLACK
+          value: 'openwhisk api url for slack action'
         - name: SLACK_MESSAGE
           value: 'Your balance is over $50,000.00'
+        - name: OPENWHISK_API_URL_EMAIL
+          value:'openwhisk api url for email action'
         ports:
         - containerPort: 8080
