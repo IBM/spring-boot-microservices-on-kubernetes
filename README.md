@@ -200,6 +200,7 @@ Requirements for this sections:
 	![Set-Default](images/viewAction.png)
 	Then set `url` to `https://< Your Slack Team's incoming webhook url>`
 	![Set-Default](images/defaultParameters.png)
+	* Create another action for [sendEmail.js](/sendEmail.js) for sending an email through Gmail.
 
 2. Create Managed API
 	* From the API tab, Create Managed API
@@ -207,7 +208,7 @@ Requirements for this sections:
 
 	* Then set an API name
 	![Managed-API](images/api.png)
-	* Create an operation. Make it a **POST request** and **select the Action** you just created.
+	* Create an operation. Make it a **POST request** and **select the Slack Action** you just created. **Do the same fore the Email Action**.
 	![Create-Operation](images/createOperation.png)
 
 		![Create-Operation](images/operation.png)
@@ -220,6 +221,8 @@ Requirements for this sections:
 	  value: 'openwhisk api url' # enter the url of the API you just created
 	- name: SLACK_MESSAGE
 	  value: 'Your balance is over $50,000.00' # set the slack message
+	- name: OPENWHISK_API_URL_EMAIL
+	  value:'openwhisk api url for email action'
 	```
 4. Redeploy your Application
 
