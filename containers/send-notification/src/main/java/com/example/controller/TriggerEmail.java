@@ -35,7 +35,7 @@ public class TriggerEmail {
 
 	@Value("${trigger.email.url}")
 	private String email_url;
-	
+
 	@Value("${spring.mail.password}")
 	private String password;
 
@@ -43,9 +43,9 @@ public class TriggerEmail {
 	private String send() {
 		MimeMessage mail = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mail);
-		
+
 		try {
-			if (!email_url.isEmpty()) {
+			if (email_url.isEmpty()) {
 				helper.setTo(receiver);
 				helper.setFrom(sender);
 				helper.setReplyTo(sender);
