@@ -44,6 +44,6 @@ spec:
         - name: SLACK_MESSAGE
           value: 'Your balance is over $50,000.00'
         - name: OPENWHISK_API_URL_EMAIL
-          value:'openwhisk api url for email action'
+          value: 'openwhisk api url for email action'
         ports:
         - containerPort: 8080

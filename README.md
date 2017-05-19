@@ -222,7 +222,7 @@ Requirements for this sections:
 	- name: SLACK_MESSAGE
 	  value: 'Your balance is over $50,000.00' # set the slack message
 	- name: OPENWHISK_API_URL_EMAIL
-	  value:'openwhisk api url for email action'
+	  value: 'openwhisk api url for email action'
 	```
 4. Redeploy your Application
 
