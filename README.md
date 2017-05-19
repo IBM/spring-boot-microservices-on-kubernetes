@@ -27,7 +27,7 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
 	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
 2. [Create the Spring Boot Microservices](#2-create-the-spring-boot-microservices)
-        - 2.1 [Use OpenWhisk action with Spring Boot Notification Service](#21-use-openwhisk-action-with-spring-boot-notificatoin-service)
+      - 2.1 [Use OpenWhisk action with Spring Boot Notification Service](#21-use-openwhisk-action-with-spring-boot-notificatoin-service)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your Application](#5-access-your-application)
@@ -141,7 +141,7 @@ The **Send-Notification** can be configured to send notification through gmail a
 	```
 	> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
 
-To use OpenWhisk with your notification microservice for email and slack messages, follow the step below, or jump to [step 3 to create the Node.js frontend]((#3-create-the-frontend-service)
+To use OpenWhisk with your notification microservice for email and slack messages, follow the step below, or jump to [step 3 to create the Node.js frontend](#3-create-the-frontend-service)
 
 ### 21 Use OpenWhisk Action with Spring Boot Notification service
 
