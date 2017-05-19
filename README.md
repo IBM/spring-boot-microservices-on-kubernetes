@@ -77,9 +77,7 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack.
-
-You will need to use an [OpenWhisk](#using-openwhisk-action-with-slack-notification) action for the slack notification. You may also choose to use an OpenWhisk action for the email notification. If you want to use OpenWhisk, go to [Using OpenWhisk](#using-openwhisk-action-with-slack-notification) section before building and deploying the images. Otherwise, you can proceed if you choose to only have an email notification setup.
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
 
 * 1. Build the images
 
