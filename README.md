@@ -31,6 +31,9 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your Application](#5-access-your-application)
 
+#### [Using OpenWhisk](#using-openwhisk-action-with-slack-notification)
+#### [Troubleshooting](#troubleshooting-1)
+
 # 1. Create the Database service
 The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
 
@@ -212,13 +215,13 @@ Requirements for this sections:
 	![Create-Operation](images/createOperation.png)
 
 		![Create-Operation](images/operation.png)
-	* Go to the API Explorer section on your managed API and take note of the URL
+	* Go to the API Explorer section on your managed API and take note of the URL for both **Slack** and **Email** operations.
 	![API-Url](images/apiUrl.png)
 3. Modify `send-notification.yaml`
 	* Fill in the necessary values on the environment variables
 	```yaml
-	- name: OPENWHISK_API_URL
-	  value: 'openwhisk api url' # enter the url of the API you just created
+	- name: OPENWHISK_API_URL_SLACK
+	  value: 'openwhisk api url for slack action' # enter the url of the API you just created
 	- name: SLACK_MESSAGE
 	  value: 'Your balance is over $50,000.00' # set the slack message
 	- name: OPENWHISK_API_URL_EMAIL
@@ -229,7 +232,6 @@ Requirements for this sections:
 
 ## Troubleshooting
 * To start over, delete everything: `kubectl delete svc,deploy -l app=office-space`
-* To restart the balance to 0, delete **compute-interest-api** deployment: `kubectl delete -f compute-interest-api.yaml`
 
 
 ## References
