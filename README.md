@@ -77,6 +77,10 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
+The **Send-Notification** can be configured to send notification through gmail and/or Slack.
+
+You will need to use an [OpenWhisk](#using-openwhisk-action-with-slack-notification) action for the slack notification. You may also choose to use an OpenWhisk action for the email notification. If you want to use OpenWhisk, go to [Using OpenWhisk](#using-openwhisk-action-with-slack-notification) section before building and deploying the images. Otherwise, you can proceed if you choose to only have an email notification setup.
+
 * 1. Build the images
 
 	After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
