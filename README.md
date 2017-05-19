@@ -26,8 +26,8 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 1. [Create the Database service](#1-create-the-database-service)
 	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
 	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
-2. [Create the Spring Boot Microservices](#1-create-the-spring-boot-microservices)
-        - 2.1 [Using OpenWhisk action with Spring Boot Notification Service)(#21-using-openwhisk-action-with-spring-boot-notificatoin-service)
+2. [Create the Spring Boot Microservices](#2-create-the-spring-boot-microservices)
+        - 2.1 [Use OpenWhisk action with Spring Boot Notification Service](#21-use-openwhisk-action-with-spring-boot-notificatoin-service)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your Application](#5-access-your-application)
@@ -109,15 +109,15 @@ The **Send-Notification** can be configured to send notification through gmail a
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
-      
-      ```yaml
-      
-      ```yaml
+  ```
+  
+  ```yaml
   // send-notification.yaml
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
   ```
+  
 	You will also need to modify the **environment variables** in the `send-notification.yaml`:
 	```yaml
     env:
@@ -143,7 +143,7 @@ The **Send-Notification** can be configured to send notification through gmail a
 
 To use OpenWhisk with your notification microservice for email and slack messages, follow the step below, or jump to [step 3 to create the Node.js frontend]((#3-create-the-frontend-service)
 
-### 21 Using OpenWhisk Action with Spring Boot Notification service
+### 21 Use OpenWhisk Action with Spring Boot Notification service
 
 Requirements for this sections:
 * [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
