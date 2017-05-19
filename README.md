@@ -27,11 +27,11 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
 	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
 2. [Create the Spring Boot Microservices](#1-create-the-spring-boot-microservices)
+        - 2.1 [Using OpenWhisk action with Spring Boot Notification Service)(#21-using-openwhisk-action-with-spring-boot-notificatoin-service)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your Application](#5-access-your-application)
 
-#### [Using OpenWhisk](#using-openwhisk-action-with-slack-notification)
 #### [Troubleshooting](#troubleshooting-1)
 
 # 1. Create the Database service
@@ -71,7 +71,7 @@ deployment "account-database" created
         value: 'bluemix'
   ```
 
-# 2. Create the Spring Boot Microservices:
+# 2. Create the Spring Boot Microservices
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
 If you want to modify the Spring Boot apps, you will need to do it before building the Java project and the docker image.
 
@@ -109,6 +109,10 @@ The **Send-Notification** can be configured to send notification through gmail a
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
+      
+      ```yaml
+      
+      ```yaml
   // send-notification.yaml
     spec:
       containers:
@@ -137,53 +141,9 @@ The **Send-Notification** can be configured to send notification through gmail a
 	```
 	> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
 
-# 3. Create the Frontend service
-The UI is a Node.js app that shows the total account balance.
-**If you are using a MySQL database in Bluemix, don't forget to fill in the values of the environment variables in `account-summary.yaml` file, otherwise leave them blank. This was done in [Step 1](#1-create-the-database-service).**
+To use OpenWhisk with your notification microservice for email and slack messages, follow the step below, or jump to [step 3 to create the Node.js frontend]((#3-create-the-frontend-service)
 
-
-* Create the **Node.js** frontend:
-```bash
-$ kubectl create -f account-summary.yaml
-service "account-summary" created
-deployment "account-summary" created
-```
-
-# 4. Create the Transaction Generator service
-The transaction generator is a Python app that generates random transactions with accumulated interest.
-* Create the transaction generator **Python** app:
-```bash
-$ kubectl create -f transaction-generator.yaml
-service "transaction-generator" created
-deployment "transaction-generator" created
-```
-
-# 5. Access Your Application
-You can access your app publicly through your Cluster IP and the NodePort. The NodePort should be **30080**.
-
-* To find your IP:
-```bash
-$ kubectl get nodes
-NAME             STATUS    AGE
-169.47.241.213   Ready     7d
----OR---
-$ bx cs workers <cluster-name>
-ID                                                 Public IP        Private IP      Machine Type   State    Status   
-kube-dal10-paac005a5fa6c44786b5dfb3ed8728548f-w1   169.47.241.213   10.177.155.13   free           normal   Ready  
-```
-
-* To find the NodePort of the account-summary service:
-```bash
-$ kubectl get svc
-NAME                    CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                      AGE
-...
-account-summary         10.10.10.74    <nodes>       80:30080/TCP                                                                 2d
-...
-```
-* On your browser, go to `http://<your-cluster-IP>:30080`
-![Account-balance](images/balance.png)
-
-# Using OpenWhisk Action with Slack Notification
+### 21 Using OpenWhisk Action with Spring Boot Notification service
 
 Requirements for this sections:
 * [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
@@ -229,8 +189,51 @@ Requirements for this sections:
 	- name: OPENWHISK_API_URL_EMAIL
 	  value: 'openwhisk api url for email action'
 	```
-4. Redeploy your Application
+# 3. Create the Frontend service
+The UI is a Node.js app that shows the total account balance.
+**If you are using a MySQL database in Bluemix, don't forget to fill in the values of the environment variables in `account-summary.yaml` file, otherwise leave them blank. This was done in [Step 1](#1-create-the-database-service).**
 
+
+* Create the **Node.js** frontend:
+```bash
+$ kubectl create -f account-summary.yaml
+service "account-summary" created
+deployment "account-summary" created
+```
+
+# 4. Create the Transaction Generator service
+The transaction generator is a Python app that generates random transactions with accumulated interest.
+* Create the transaction generator **Python** app:
+```bash
+$ kubectl create -f transaction-generator.yaml
+service "transaction-generator" created
+deployment "transaction-generator" created
+```
+
+# 5. Access Your Application
+You can access your app publicly through your Cluster IP and the NodePort. The NodePort should be **30080**.
+
+* To find your IP:
+```bash
+$ kubectl get nodes
+NAME             STATUS    AGE
+169.47.241.213   Ready     7d
+---OR---
+$ bx cs workers <cluster-name>
+ID                                                 Public IP        Private IP      Machine Type   State    Status   
+kube-dal10-paac005a5fa6c44786b5dfb3ed8728548f-w1   169.47.241.213   10.177.155.13   free           normal   Ready  
+```
+
+* To find the NodePort of the account-summary service:
+```bash
+$ kubectl get svc
+NAME                    CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                      AGE
+...
+account-summary         10.10.10.74    <nodes>       80:30080/TCP                                                                 2d
+...
+```
+* On your browser, go to `http://<your-cluster-IP>:30080`
+![Account-balance](images/balance.png)
 
 ## Troubleshooting
 * To start over, delete everything: `kubectl delete svc,deploy -l app=office-space`
