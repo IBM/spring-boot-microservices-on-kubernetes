@@ -77,49 +77,59 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. Tne notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
 
-* 1. Build the images
+## 2.1. Build your projects using Maven
 
-	After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
-	```bash
-	Go to containers/compute-interest-api
-	$ mvn package
-	$ docker build -t registry.ng.bluemix.net/<namespace>/compute-interest-api .
+After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
+> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java`. It also sends a notification when the balance goes over $50,000. You can edit the number in the line `if (updatedBalance > 50000 && emailSent == false ) {`. After saving your changes, you can now then build the projects.
 
-	Go to containers/email-office-space
-	$ mvn package
-	$ docker build -t registry.ng.bluemix.net/<namespace>/send-notification .
-	```
-	 *We will be using Bluemix container registry to push images (hence the image naming), but the images [can be pushed in Docker hub](https://docs.docker.com/datacenter/dtr/2.2/guides/user/manage-images/pull-and-push-images) as well.*
-* 2. Push the images:
-	> Note: This is being pushed in the Bluemix Container Registry.
+```bash
+Go to containers/compute-interest-api
+$ mvn package
 
-	If you plan to use Bluemix Container Registry, you will need to setup your account first. Follow the tutorial [here](https://developer.ibm.com/recipes/tutorials/getting-started-with-private-registry-hosted-by-ibm-bluemix/).
+Go to containers/send-notification
+$ mvn package
 
-	You can also push it in [Docker Hub](https://hub.docker.com).
+```
+*We will be using Bluemix container registry to push images (hence the image naming), but the images [can be pushed in Docker hub](https://docs.docker.com/datacenter/dtr/2.2/guides/user/manage-images/pull-and-push-images) as well.*
+## 2.2 Build your Docker images for Spring Boot services
+> Note: This is being pushed in the Bluemix Container Registry.
 
-	```bash
-	$ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api
-	$ docker push registry.ng.bluemix.net/<namespace>/send-notification
-	```
-* 3. Modify `compute-interest-api.yaml` and `send-notification.yaml` to use your image
-	```yaml
-  // compute-interest-api.yaml
-    spec:
-      containers:
-      - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
-  ```
+If you plan to use Bluemix Container Registry, you will need to setup your account first. Follow the tutorial [here](https://developer.ibm.com/recipes/tutorials/getting-started-with-private-registry-hosted-by-ibm-bluemix/).
 
-  ```yaml
-  // send-notification.yaml
-    spec:
-      containers:
-      - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
-  ```
+You can also push it in [Docker Hub](https://hub.docker.com).
 
-	You will also need to modify the **environment variables** in the `send-notification.yaml`:
-	```yaml
+```bash
+$ docker build -t registry.ng.bluemix.net/<namespace>/compute-interest-api .
+$ docker build -t registry.ng.bluemix.net/<namespace>/send-notification .
+$ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api
+$ docker push registry.ng.bluemix.net/<namespace>/send-notification
+```
+## 2.3 Modify `compute-interest-api.yaml` and `send-notification.yaml` to use your image
+
+Once you have successfully pushed your images, you will need to modify the yaml files to use your images.
+```yaml
+// compute-interest-api.yaml
+  spec:
+    containers:
+    - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
+```
+
+```yaml
+// send-notification.yaml
+  spec:
+    containers:
+    - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
+```
+
+To enable the notification service, you will need to modify the environment variables in the `send-notification.yaml` file. You have **two options** to choose from, either [2.3.1 Use default email service]() **OR** [2.3.2 Use OpenWhisk Actions]().
+
+### 2.3.1 Use default email service (gmail) with Notification service
+
+
+You will need to modify the **environment variables** in the `send-notification.yaml`:
+```yaml
     env:
     - name: GMAIL_SENDER_USER
        value: 'username@gmail.com' # change this to the gmail that will send the email
@@ -127,27 +137,40 @@ The **Send-Notification** can be configured to send notification through gmail a
        value: 'password' # change this to the the password of the gmail above
     - name: EMAIL_RECEIVER
        value: 'sendTo@gmail.com' # change this to the email of the receiver
-	```
-* 4. Deploy the Spring Boot Microservices
-	```bash
-	$ kubectl create -f compute-interest-api.yaml
-	service "compute-interest-api" created
-	deployment "compute-interest-api" created
-	```
-	```bash
-	$ kubectl create -f send-notification.yaml
-	service "send-notification" created
-	deployment "send-notification" created
-	```
-	> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java` then build the image again.
+```
+
+You may now proceed to [Step 2.4]()
+
+### 2.3.2 Use OpenWhisk Action with Notification service
+Requirements for this sections:
+* [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
+* **Bluemix Account** to use [OpenWhisk CLI](https://console.ng.bluemix.net/openwhisk/).
+
+#### 2.3.2.1 Create Actions
+#### 2.3.2.2 Test Actions
+#### 2.3.2.3 Create API for Actions
+#### 2.3.2.4 Test API Url
+#### 2.3.2.5 Add API Url to yaml files
+
+
+## 2.4 Deploy the Spring Boot Microservices
+```bash
+$ kubectl create -f compute-interest-api.yaml
+service "compute-interest-api" created
+deployment "compute-interest-api" created
+```
+```bash
+$ kubectl create -f send-notification.yaml
+service "send-notification" created
+deployment "send-notification" created
+```
+
 
 To use OpenWhisk with your notification microservice for email and slack messages, follow the step below, or jump to [step 3 to create the Node.js frontend](#3-create-the-frontend-service)
 
 ### 21 Use OpenWhisk Action with Spring Boot Notification service
 
-Requirements for this sections:
-* [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
-* **Bluemix Account** to use [OpenWhisk](https://console.ng.bluemix.net/openwhisk/).
+
 
 
 1. Create an OpenWhisk Action
@@ -163,7 +186,7 @@ Requirements for this sections:
 	* Set your [Slack Webhook URL](https://api.slack.com/incoming-webhooks) as default parameter for the action then save it
 	Click on View Action Details
 	![Set-Default](images/viewAction.png)
-	Then set `url` to `https://< Your Slack Team's incoming webhook url>`
+	Then set `url` to `https://< Your Slack Team incoming webhook url>`
 	![Set-Default](images/defaultParameters.png)
 	* Create another action for [sendEmail.js](/sendEmail.js) for sending an email through Gmail.
 
@@ -180,15 +203,16 @@ Requirements for this sections:
 	* Go to the API Explorer section on your managed API and take note of the URL for both **Slack** and **Email** operations.
 	![API-Url](images/apiUrl.png)
 3. Modify `send-notification.yaml`
-	* Fill in the necessary values on the environment variables
-	```yaml
-	- name: OPENWHISK_API_URL_SLACK
-	  value: 'openwhisk api url for slack action' # enter the url of the API you just created
-	- name: SLACK_MESSAGE
-	  value: 'Your balance is over $50,000.00' # set the slack message
-	- name: OPENWHISK_API_URL_EMAIL
-	  value: 'openwhisk api url for email action'
-	```
+* Fill in the necessary values on the environment variables
+
+```yaml
+- name: OPENWHISK_API_URL_SLACK
+  value: 'openwhisk api url for slack action' # enter the url of the API you just created
+- name: SLACK_MESSAGE
+  value: 'Your balance is over $50,000.00' # set the slack message
+- name: OPENWHISK_API_URL_EMAIL
+  value: 'openwhisk api url for email action'
+```
 # 3. Create the Frontend service
 The UI is a Node.js app that shows the total account balance.
 **If you are using a MySQL database in Bluemix, don't forget to fill in the values of the environment variables in `account-summary.yaml` file, otherwise leave them blank. This was done in [Step 1](#1-create-the-database-service).**
