@@ -26,14 +26,19 @@ stages:
   properties:
   - name: BLUEMIX_USER
     type: text
+    value: ${BLUEMIX_USER}
   - name: BLUEMIX_PASSWORD
     type: secure
+    value: ${BLUEMIX_PASSWORD}
   - name: BLUEMIX_ACCOUNT
     type: secure
+    value: ${BLUEMIX_ACCOUNT}
   - name: CLUSTER_NAME
     type: text
+    value: ${CLUSTER_NAME}
   - name: API_KEY
     type: secure
+    value: ${API_KEY}
   jobs:
   - name: Deploy
     type: deployer

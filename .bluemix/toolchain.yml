@@ -13,8 +13,8 @@ sample-repo:
   service_id: githubpublic
   parameters:
     repo_name: "{{name}}"
-    repo_url: https://github.com/IBM/office-space.git
-    type: fork
+    repo_url: https://github.com/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes.git
+    type: clone
     has_issues: false
 
 # Pipelines
@@ -27,10 +27,15 @@ sample-build:
      content: $file(pipeline.yml)
      env:
       SAMPLE_REPO: "sample-repo"
-      CF_APP_NAME: "{{deploy.parameters.prod-app-name}}"
+      CF_APP_NAME: "pipeline"
       PROD_SPACE_NAME: "{{deploy.parameters.prod-space}}"
       PROD_ORG_NAME: "{{deploy.parameters.prod-organization}}"
       PROD_REGION_ID: "{{deploy.parameters.prod-region}}"
+      BLUEMIX_USER: "{{deploy.parameters.bluemix-user}}"
+      BLUEMIX_PASSWORD: "{{deploy.parameters.bluemix-password}}"
+      API_KEY: "{{deploy.parameters.bluemix-api-key}}"
+      BLUEMIX_ACCOUNT: "{{deploy.parameters.bluemix-cluster-account}}"
+      CLUSTER_NAME: "{{deploy.parameters.bluemix-cluster-name}}"
      execute: true
     services: ["sample-repo"]
   hidden: [form, description]
