@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/office-space.svg?branch=master)](https://travis-ci.org/IBM/office-space)
+[![Build Status](https://travis-ci.org/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes.svg?branch=master)](https://travis-ci.org/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes)
 # OfficeSpace: Polyglot Microservices application leveraging Java Spring Boot on Kubernetes
 
 Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications.
@@ -110,14 +110,14 @@ The **Send-Notification** can be configured to send notification through gmail a
       containers:
       - image: registry.ng.bluemix.net/<namespace>/compute-interest-api # replace with your image name
   ```
-  
+
   ```yaml
   // send-notification.yaml
     spec:
       containers:
       - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
   ```
-  
+
 	You will also need to modify the **environment variables** in the `send-notification.yaml`:
 	```yaml
     env:
