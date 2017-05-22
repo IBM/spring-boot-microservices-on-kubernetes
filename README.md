@@ -173,10 +173,63 @@ $ wsk action invoke --blocking sendEmailNotification --param sender [sender's em
 ```
 
 #### 2.3.2.3 Create REST API for Actions
+You can map REST API endpoints for your created actions using `wsk api-experimental create`. The syntax for it is `wsk api-experimental create [base-path] [api-path] [verb (GET PUT POST etc)] [action name]`
+* Create endpoint for **Slack Notification**
+```bash
+$ wsk api-experimental create /v1 /slack post sendSlackNotification
+ok: created API /v1/email POST for action /_/sendEmailNotification
+https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+```
+* Create endpoint for **Gmail Notification**
+```bash
+$ wsk api-experimental create /v1 /email post sendEmailNotification
+ok: created API /v1/email POST for action /_/sendEmailNotification
+https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+```
+
+You can view a list of your APIs with this command:
+```bash
+$ wsk api-experimental list
+ok: APIs
+Action                                      Verb  API Name  URL
+/Anthony.Amanse_dev/sendEmailNotificatio    post       /v1  https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+/Anthony.Amanse_dev/testDefault             post       /v1  https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+```
+
+Take note of your API URLs. You are going to use them later.
 
 #### 2.3.2.4 Test REST API Url
 
+* Test endpoint for **Slack Notification**. Replace the URL with your own API URL.
+```bash
+$ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+```
+![Slack Notification](images/slackNotif.png)
+* Test endpoint for **Gmail Notification**. Replace the URL with your own API URL. Replace the value of the parameters **sender, password, receiver, subject** with your own.
+```bash
+$ curl -X POST -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+```
+![Email Notification](images/emailNotif.png)
+
 #### 2.3.2.5 Add REST API Url to yaml files
+Once you have confirmed that your APIs are working, put the URLs in your `send-notification.yaml` file
+```yaml
+env:
+- name: GMAIL_SENDER_USER
+  value: 'username@gmail.com' # the sender's email
+- name: GMAIL_SENDER_PASSWORD
+  value: 'password' # the sender's password
+- name: EMAIL_RECEIVER
+  value: 'sendTo@gmail.com' # the receiver's email
+- name: OPENWHISK_API_URL_SLACK
+  value: 'https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack' # your API endpoint for slack notifications
+- name: SLACK_MESSAGE
+  value: 'Your balance is over $50,000.00' # your custom message
+- name: OPENWHISK_API_URL_EMAIL
+  value: 'https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email' # your API endpoint for email notifications
+```
+
+
 
 
 ## 2.4 Deploy the Spring Boot Microservices
