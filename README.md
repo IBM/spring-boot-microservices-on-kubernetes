@@ -27,7 +27,12 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
 	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
 2. [Create the Spring Boot Microservices](#2-create-the-spring-boot-microservices)
-      - 2.1 [Use OpenWhisk action with Spring Boot Notification Service](#21-use-openwhisk-action-with-spring-boot-notification-service)
+      - 2.1 [Build Projects using Maven](#21-build-your-projects-using-maven)
+      - 2.2 [Build and Push Docker Images](#22-build-your-docker-images-for-spring-boot-services)
+      - 2.3 [Modify yaml files for Spring Boot services](#23-modify-compute-interest-apiyaml-and-send-notificationyaml-to-use-your-image)
+      	- 2.3.1 [Use default email service in Notification service](#231-use-default-email-service-gmail-with-notification-service)
+      	- 2.3.2 [Use OpenWhisk Actions in Notification service](#232-use-openwhisk-action-with-notification-service)
+      - 2.4 [Deploy the Spring Boot microservices](#24-deploy-the-spring-boot-microservices)
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your Application](#5-access-your-application)
@@ -106,7 +111,7 @@ $ docker build -t registry.ng.bluemix.net/<namespace>/send-notification .
 $ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api
 $ docker push registry.ng.bluemix.net/<namespace>/send-notification
 ```
-## 2.3 Modify `compute-interest-api.yaml` and `send-notification.yaml` to use your image
+## 2.3 Modify *compute-interest-api.yaml* and *send-notification.yaml* to use your image
 
 Once you have successfully pushed your images, you will need to modify the yaml files to use your images.
 ```yaml
@@ -123,7 +128,7 @@ Once you have successfully pushed your images, you will need to modify the yaml 
     - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
 ```
 
-To enable the notification service, you will need to modify the environment variables in the `send-notification.yaml` file. You have **two options** to choose from, either [2.3.1 Use default email service]() **OR** [2.3.2 Use OpenWhisk Actions]().
+To enable the notification service, you will need to modify the environment variables in the `send-notification.yaml` file. You have **two options** to choose from, either [2.3.1 Use default email service](#231-use-default-email-service-gmail-with-notification-service) **OR** [2.3.2 Use OpenWhisk Actions](#232-use-openwhisk-action-with-notification-service).
 
 ### 2.3.1 Use default email service (gmail) with Notification service
 
@@ -139,7 +144,7 @@ You will need to modify the **environment variables** in the `send-notification.
        value: 'sendTo@gmail.com' # change this to the email of the receiver
 ```
 
-You may now proceed to [Step 2.4]()
+You may now proceed to [Step 2.4](#24-deploy-the-spring-boot-microservices).
 
 ### 2.3.2 Use OpenWhisk Action with Notification service
 Requirements for this sections:
