@@ -146,11 +146,37 @@ Requirements for this sections:
 * [Slack Incoming Webhook](https://api.slack.com/incoming-webhooks) in your Slack team.
 * **Bluemix Account** to use [OpenWhisk CLI](https://console.ng.bluemix.net/openwhisk/).
 
+
 #### 2.3.2.1 Create Actions
+The root directory of this repository contains the required code for you to create OpenWhisk Actions.
+If you haven't installed the OpenWhisk CLI yet, go [here](https://console.ng.bluemix.net/openwhisk/).
+You can create OpenWhisk Actions using the `wsk` command. Creating action uses the syntax: `wsk action create < action_name > < source code for action> [add --param for optional Default parameters]`
+* Create action for sending **Slack Notification**
+```bash
+$ wsk action create sendSlackNotification sendSlack.js --param url https://hooks.slack.com/services/XXXX/YYYY/ZZZZ
+Replace the url with your Slack team's incoming webhook url.
+```
+* Create action for sending **Gmail Notification**
+```bash
+$ wsk action create sendEmailNotification sendEmail.js
+```
+
 #### 2.3.2.2 Test Actions
-#### 2.3.2.3 Create API for Actions
-#### 2.3.2.4 Test API Url
-#### 2.3.2.5 Add API Url to yaml files
+You can test your OpenWhisk Actions using `wsk action invoke [action name] [add --param to pass  parameters]`
+* Invoke Slack Notification
+```bash
+$ wsk action invoke sendSlackNotification --param text "Hello from OpenWhisk"
+```
+* Invoke Email Notification
+```bash
+$ wsk action invoke --blocking sendEmailNotification --param sender [sender's email] --param password [sender's password]--param receiver [receiver's email] --param subject [Email subject] --param text [Email Body]
+```
+
+#### 2.3.2.3 Create REST API for Actions
+
+#### 2.3.2.4 Test REST API Url
+
+#### 2.3.2.5 Add REST API Url to yaml files
 
 
 ## 2.4 Deploy the Spring Boot Microservices
@@ -165,54 +191,6 @@ service "send-notification" created
 deployment "send-notification" created
 ```
 
-
-To use OpenWhisk with your notification microservice for email and slack messages, follow the step below, or jump to [step 3 to create the Node.js frontend](#3-create-the-frontend-service)
-
-### 21 Use OpenWhisk Action with Spring Boot Notification service
-
-
-
-
-1. Create an OpenWhisk Action
-	* Click on [Developer in your Browser](https://console.ng.bluemix.net/openwhisk/) and click on **Create an Action**
-	![Create-Action](images/developBrowser.png)
-
-	* Then click on
-	![Create-Action](images/createAction.png)
-
-		![Create-Action](images/action.png)
-	* Copy the [sendSlack.js](/sendSlack.js) for sending a Slack Notification then save it
-	![Copy-Script](images/copyScript.png)
-	* Set your [Slack Webhook URL](https://api.slack.com/incoming-webhooks) as default parameter for the action then save it
-	Click on View Action Details
-	![Set-Default](images/viewAction.png)
-	Then set `url` to `https://< Your Slack Team incoming webhook url>`
-	![Set-Default](images/defaultParameters.png)
-	* Create another action for [sendEmail.js](/sendEmail.js) for sending an email through Gmail.
-
-2. Create Managed API
-	* From the API tab, Create Managed API
-	![Managed-API](images/createManaged.png)
-
-	* Then set an API name
-	![Managed-API](images/api.png)
-	* Create an operation. Make it a **POST request** and **select the Slack Action** you just created. **Do the same fore the Email Action**.
-	![Create-Operation](images/createOperation.png)
-
-		![Create-Operation](images/operation.png)
-	* Go to the API Explorer section on your managed API and take note of the URL for both **Slack** and **Email** operations.
-	![API-Url](images/apiUrl.png)
-3. Modify `send-notification.yaml`
-* Fill in the necessary values on the environment variables
-
-```yaml
-- name: OPENWHISK_API_URL_SLACK
-  value: 'openwhisk api url for slack action' # enter the url of the API you just created
-- name: SLACK_MESSAGE
-  value: 'Your balance is over $50,000.00' # set the slack message
-- name: OPENWHISK_API_URL_EMAIL
-  value: 'openwhisk api url for email action'
-```
 # 3. Create the Frontend service
 The UI is a Node.js app that shows the total account balance.
 **If you are using a MySQL database in Bluemix, don't forget to fill in the values of the environment variables in `account-summary.yaml` file, otherwise leave them blank. This was done in [Step 1](#1-create-the-database-service).**
