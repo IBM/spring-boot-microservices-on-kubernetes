@@ -174,8 +174,9 @@ $ wsk action invoke sendSlackNotification --param text "Hello from OpenWhisk"
 ```
 * Invoke Email Notification
 ```bash
-$ wsk action invoke --blocking sendEmailNotification --param sender [sender's email] --param password [sender's password]--param receiver [receiver's email] --param subject [Email subject] --param text [Email Body]
+$ wsk action invoke sendEmailNotification --param sender [sender's email] --param password [sender's password]--param receiver [receiver's email] --param subject [Email subject] --param text [Email Body]
 ```
+You should receive a slack message and receive an email respectively.
 
 #### 2.3.2.3 Create REST API for Actions
 You can map REST API endpoints for your created actions using `wsk api-experimental create`. The syntax for it is `wsk api-experimental create [base-path] [api-path] [verb (GET PUT POST etc)] [action name]`
