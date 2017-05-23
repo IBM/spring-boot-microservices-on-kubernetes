@@ -89,6 +89,21 @@
           "readonly": false,
           "title": "Bluemix Cluster Name",
           "key": "bluemix-cluster-name"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Gmail Sender User",
+          "key": "gmail-sender-user"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Gmail Sender Password",
+          "key": "gmail-sender-password"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Email of Receiver",
+          "key": "email-receiver"
         },
         {
             "type": "table",
