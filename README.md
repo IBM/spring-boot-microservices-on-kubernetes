@@ -37,9 +37,9 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 	
 	2.3 [Modify yaml files for Spring Boot services](#23-modify-compute-interest-apiyaml-and-send-notificationyaml-to-use-your-image)
 	
-		2.3.1 [Use default email service in Notification service](#231-use-default-email-service-gmail-with-notification-service) or
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [Use default email service in Notification service](#231-use-default-email-service-gmail-with-notification-service) or
 		
-		2.3.2 [Use OpenWhisk Actions in Notification service](#232-use-openwhisk-action-with-notification-service)
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [Use OpenWhisk Actions in Notification service](#232-use-openwhisk-action-with-notification-service)
 		
 	2.4 [Deploy the Spring Boot microservices](#24-deploy-the-spring-boot-microservices)
 	
