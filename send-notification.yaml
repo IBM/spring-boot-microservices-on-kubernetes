@@ -36,7 +36,7 @@ spec:
         - name: GMAIL_SENDER_USER
           value: 'username@gmail.com'
         - name: GMAIL_SENDER_PASSWORD
-          value: 'password@gmail'
+          value: 'password@gmail.com'
         - name: EMAIL_RECEIVER
           value: 'sendTo@gmail.com'
         - name: OPENWHISK_API_URL_SLACK
