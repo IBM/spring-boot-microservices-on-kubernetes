@@ -36,6 +36,9 @@ sample-build:
       API_KEY: "{{deploy.parameters.bluemix-api-key}}"
       BLUEMIX_ACCOUNT: "{{deploy.parameters.bluemix-cluster-account}}"
       CLUSTER_NAME: "{{deploy.parameters.bluemix-cluster-name}}"
+      GMAIL_SENDER_USER: "{{deploy.parameters.gmail-sender-user}}"
+      GMAIL_SENDER_PASSWORD: "{{deploy.parameters.gmail-sender-password}}"
+      EMAIL_RECEIVER: "{{deploy.parameters.email-receiver}}"
      execute: true
     services: ["sample-repo"]
   hidden: [form, description]

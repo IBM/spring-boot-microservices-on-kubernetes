@@ -36,6 +36,18 @@
         "bluemix-cluster-name": {
              "description": "Your cluster name. Retrieve it with [bx cs clusters].",
              "type": "string"
+         },
+        "gmail-sender-user": {
+             "description": "Your Gmail account that will be used to send an email notification",
+             "type": "string"
+         },
+        "gmail-sender-password": {
+             "description": "Your Gmail Password for the Gmail account above",
+             "type": "string"
+         },
+        "email-receiver": {
+             "description": "The receiver of your email notification",
+             "type": "string"
          }
     },
     "required": ["prod-region", "prod-organization", "prod-space", "prod-app-name", "bluemix-cluster-name"],
