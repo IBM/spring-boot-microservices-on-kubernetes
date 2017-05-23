@@ -3,7 +3,7 @@ stages:
 - name: BUILD
   inputs:
   - type: git
-    branch: openwhisk_cli
+    branch: master
     service: ${SAMPLE_REPO}
   triggers:
   - type: commit
