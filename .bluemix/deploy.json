@@ -17,12 +17,48 @@
             "description": "The bluemix space",
             "type": "string"
         },
-       "prod-app-name": {
-            "description": "The name of your Hello World app",
-            "type": "string"
-        }
+        "bluemix-user": {
+             "description": "Your Bluemix user ID",
+             "type": "string"
+         },
+        "bluemix-password": {
+             "description": "Your Bluemix Password",
+             "type": "string"
+         },
+        "bluemix-api-key": {
+             "description": "Required for **Federated ID** since Federated ID can't login with Bluemix user and password via Bluemix CLI. You can obtain your API_KEY via https://console.ng.bluemix.net/iam/#/apikeys by clicking **Create API key** (Each API key only can be viewed once).",
+             "type": "string"
+         },
+        "bluemix-cluster-account": {
+             "description": "The GUID of the Bluemix account where you created the cluster. Retrieve it with [bx iam accounts].",
+             "type": "string"
+         },
+        "bluemix-cluster-name": {
+             "description": "Your cluster name. Retrieve it with [bx cs clusters].",
+             "type": "string"
+         },
+        "gmail-sender-user": {
+             "description": "Your Gmail account that will be used to send an email notification",
+             "type": "string"
+         },
+        "gmail-sender-password": {
+             "description": "Your Gmail Password for the Gmail account above",
+             "type": "string"
+         },
+        "email-receiver": {
+             "description": "The receiver of your email notification",
+             "type": "string"
+         }
     },
-    "required": ["prod-region", "prod-organization", "prod-space", "prod-app-name"],
+    "required": ["prod-region", "prod-organization", "prod-space", "prod-app-name", "bluemix-cluster-name"],
+    "anyOf": [
+        {
+            "required": ["bluemix-user", "bluemix-password", "bluemix-cluster-account"]
+        },
+        {
+            "required": ["bluemix-api-key"]
+        }
+    ],
     "form": [
        {
           "type": "validator",
@@ -31,8 +67,43 @@
         {
           "type": "text",
           "readonly": false,
-          "title": "App name",
-          "key": "prod-app-name"
+          "title": "Bluemix User ID",
+          "key": "bluemix-user"
+        },{
+          "type": "password",
+          "readonly": false,
+          "title": "Bluemix Password",
+          "key": "bluemix-password"
+        },{
+          "type": "password",
+          "readonly": false,
+          "title": "Bluemix API Key (Optional)",
+          "key": "bluemix-api-key"
+        },{
+          "type": "password",
+          "readonly": false,
+          "title": "Bluemix Cluster Account ID",
+          "key": "bluemix-cluster-account"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Bluemix Cluster Name",
+          "key": "bluemix-cluster-name"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Gmail Sender User",
+          "key": "gmail-sender-user"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Gmail Sender Password",
+          "key": "gmail-sender-password"
+        },{
+          "type": "text",
+          "readonly": false,
+          "title": "Email of Receiver",
+          "key": "email-receiver"
         },
         {
             "type": "table",
@@ -57,7 +128,7 @@
                 },
                 {
                   "type": "label",
-                  "title": "Production stage"
+                  "title": "Deployment Configuration"
                 },
                 {
                   "type": "select",

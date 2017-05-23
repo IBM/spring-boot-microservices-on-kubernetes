@@ -3,7 +3,7 @@ stages:
 - name: BUILD
   inputs:
   - type: git
-    branch: master
+    branch: openwhisk_cli
     service: ${SAMPLE_REPO}
   triggers:
   - type: commit
@@ -26,14 +26,28 @@ stages:
   properties:
   - name: BLUEMIX_USER
     type: text
+    value: ${BLUEMIX_USER}
   - name: BLUEMIX_PASSWORD
     type: secure
+    value: ${BLUEMIX_PASSWORD}
   - name: BLUEMIX_ACCOUNT
     type: secure
+    value: ${BLUEMIX_ACCOUNT}
   - name: CLUSTER_NAME
     type: text
+    value: ${CLUSTER_NAME}
   - name: API_KEY
     type: secure
+    value: ${API_KEY}
+  - name: GMAIL_SENDER_USER
+    type: secure
+    value: ${GMAIL_SENDER_USER}
+  - name: GMAIL_SENDER_PASSWORD
+    type: secure
+    value: ${GMAIL_SENDER_PASSWORD}
+  - name: EMAIL_RECEIVER
+    type: secure
+    value: ${EMAIL_RECEIVER}
   jobs:
   - name: Deploy
     type: deployer

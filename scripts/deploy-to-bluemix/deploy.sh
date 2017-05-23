@@ -33,6 +33,19 @@ kubectl create -f account-database.yaml
 echo "Creating Spring Boot App..."
 kubectl create -f compute-interest-api.yaml
 sleep 5s
+
+if [ $GMAIL_SENDER_USER = "username@gmail.com" ] && [ $GMAIL_SENDER_PASSWORD = "password@gmail.com" ] && [ $EMAIL_RECEIVER = "sendTo@gmail.com" ]
+then
+    echo "Environment variables GMAIL_SENDER_USER, GMAIL_SENDER_PASSWORD, EMAIL_RECEIVER are using default values. Notification service would not be deployed"
+else
+    echo "Environment variables are changed, launching Notification service..."
+    sed -i s#username@gmail.com#$GMAIL_SENDER_USER# send-notification.yaml
+    sed -i s#password@gmail.com#$GMAIL_SENDER_PASSWORD# send-notification.yaml
+    sed -i s#sendTo@gmail.com#$EMAIL_RECEIVER# send-notification.yaml
+    kubectl create -f send-notification.yaml
+fi
+sleep 5s
+
 echo "Creating Node.js Frontend..."
 kubectl create -f account-summary.yaml
 while [ $? -ne 0 ]
