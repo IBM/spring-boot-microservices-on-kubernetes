@@ -24,15 +24,25 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 
 ## Steps
 1. [Create the Database service](#1-create-the-database-service)
-	- 1.1 [Use MySQL in container](#11-use-mysql-in-container) or
-	- 1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
+
+	1.1 [Use MySQL in container](#11-use-mysql-in-container) or
+	
+	1.2 [Use Bluemix MySQL](#12-use-bluemix-mysql)
+	
 2. [Create the Spring Boot Microservices](#2-create-the-spring-boot-microservices)
-      - 2.1 [Build Projects using Maven](#21-build-your-projects-using-maven)
-      - 2.2 [Build and Push Docker Images](#22-build-your-docker-images-for-spring-boot-services)
-      - 2.3 [Modify yaml files for Spring Boot services](#23-modify-compute-interest-apiyaml-and-send-notificationyaml-to-use-your-image)
-      	- 2.3.1 [Use default email service in Notification service](#231-use-default-email-service-gmail-with-notification-service)
-      	- 2.3.2 [Use OpenWhisk Actions in Notification service](#232-use-openwhisk-action-with-notification-service)
-      - 2.4 [Deploy the Spring Boot microservices](#24-deploy-the-spring-boot-microservices)
+
+	2.1 [Build Projects using Maven](#21-build-your-projects-using-maven)
+	
+	2.2 [Build and Push Docker Images](#22-build-your-docker-images-for-spring-boot-services)
+	
+	2.3 [Modify yaml files for Spring Boot services](#23-modify-compute-interest-apiyaml-and-send-notificationyaml-to-use-your-image)
+	
+		2.3.1 [Use default email service in Notification service](#231-use-default-email-service-gmail-with-notification-service) or
+		
+		2.3.2 [Use OpenWhisk Actions in Notification service](#232-use-openwhisk-action-with-notification-service)
+		
+	2.4 [Deploy the Spring Boot microservices](#24-deploy-the-spring-boot-microservices)
+	
 3. [Create the Frontend service](#3-create-the-frontend-service)
 4. [Create the Transaction Generator service](#4-create-the-transaction-generator-service)
 5. [Access Your Application](#5-access-your-application)
