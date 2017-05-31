@@ -14,7 +14,7 @@ sudo ./Bluemix_CLI/install_bluemix_cli
 
 function bluemix_auth() {
 echo "Authenticating with Bluemix"
-echo "1" | bx login -a https://api.ng.bluemix.net -u $BLUEMIX_USER -p $BLUEMIX_PASS
+echo "1" | bx login -a https://api.ng.bluemix.net --apikey $BLUEMIX_AUTH
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 bx plugin install container-service -r Bluemix
 echo "Installing kubectl"
@@ -23,8 +23,8 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 }
 
 function cluster_setup() {
-bx cs workers cluster-travis
-$(bx cs cluster-config cluster-travis | grep export)
+bx cs workers anthony-cluster-travis
+$(bx cs cluster-config anthony-cluster-travis | grep export)
 kubectl delete --ignore-not-found=true -f account-database.yaml
 kubectl delete --ignore-not-found=true -f account-summary.yaml
 kubectl delete --ignore-not-found=true -f compute-interest-api.yaml
