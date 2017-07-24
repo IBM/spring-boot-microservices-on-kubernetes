@@ -31,18 +31,30 @@ spec:
         tier: summary
     spec:
       containers:
-      - image: anthonyamanse/account-summary:1.0
+      - image: anthonyamanse/account-summary:secrets
         imagePullPolicy: Always
         name: account-summary
         env:
-        - name: OFFICESPACE_MYSQL_DB_USER
-          value: ''
-        - name: OFFICESPACE_MYSQL_DB_PASSWORD
-          value: ''
-        - name: OFFICESPACE_MYSQL_DB_HOST
-          value: ''
-        - name: OFFICESPACE_MYSQL_DB_PORT
-          value: ''
+          - name: MYSQL_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: demo-credentials
+                key: username
+          - name: MYSQL_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: demo-credentials
+                key: password
+          - name: MYSQL_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: demo-credentials
+                key: host
+          - name: MYSQL_DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: demo-credentials
+                key: port
         ports:
         - containerPort: 80
           name: web
