@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes.svg?branch=master)](https://travis-ci.org/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes)
+[![Build Status](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes.svg?branch=master)](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes)
 # Build and deploy Java Spring Boot microservices on Kubernetes
 
 Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications.
