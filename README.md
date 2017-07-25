@@ -87,11 +87,11 @@ The **Send-Notification** can be configured to send notification through gmail a
 #### Code Snippets:
 _compute-interest-api/src/main/resources/_**application.properties**
 ```
-8   spring.datasource.url = jdbc:mysql://${MYSQL_DB_HOST}:${MYSQL_DB_PORT}/dockercon2017
-9
-10  # Username and password
-11  spring.datasource.username = ${MYSQL_DB_USER}
-12  spring.datasource.password = ${MYSQL_DB_PASSWORD}
+spring.datasource.url = jdbc:mysql://${MYSQL_DB_HOST}:${MYSQL_DB_PORT}/dockercon2017
+
+# Username and password
+spring.datasource.username = ${MYSQL_DB_USER}
+spring.datasource.password = ${MYSQL_DB_PASSWORD}
 ```
 We define the datasource of our Spring Boot application in our properties file. We get the data from these environment variables on compute-interest-api.yaml.
 
@@ -150,7 +150,7 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 }
 ```
 
-A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao` 
+A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao`
 
 
 
