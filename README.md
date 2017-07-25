@@ -82,7 +82,7 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack. Tne notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. Tne notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
 
 #### Code Snippets:
 _compute-interest-api/src/main/resources/_**application.properties**
@@ -249,27 +249,27 @@ $ wsk action invoke sendEmailNotification --param sender [sender's email] --para
 You should receive a slack message and receive an email respectively.
 
 #### 2.3.2.3 Create REST API for Actions
-You can map REST API endpoints for your created actions using `wsk api-experimental create`. The syntax for it is `wsk api-experimental create [base-path] [api-path] [verb (GET PUT POST etc)] [action name]`
+You can map REST API endpoints for your created actions using `wsk api create`. The syntax for it is `wsk api create [base-path] [api-path] [verb (GET PUT POST etc)] [action name]`
 * Create endpoint for **Slack Notification**
 ```bash
-$ wsk api-experimental create /v1 /slack post sendSlackNotification
+$ wsk api create /v1 /slack POST sendSlackNotification
 ok: created API /v1/email POST for action /_/sendEmailNotification
-https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 * Create endpoint for **Gmail Notification**
 ```bash
-$ wsk api-experimental create /v1 /email post sendEmailNotification
+$ wsk api create /v1 /email POST sendEmailNotification
 ok: created API /v1/email POST for action /_/sendEmailNotification
-https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
 ```
 
 You can view a list of your APIs with this command:
 ```bash
-$ wsk api-experimental list
+$ wsk api list
 ok: APIs
 Action                                      Verb  API Name  URL
-/Anthony.Amanse_dev/sendEmailNotificatio    post       /v1  https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
-/Anthony.Amanse_dev/testDefault             post       /v1  https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+/Anthony.Amanse_dev/sendEmailNotificatio    post       /v1  https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
+/Anthony.Amanse_dev/testDefault             post       /v1  https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 
 Take note of your API URLs. You are going to use them later.
@@ -278,12 +278,12 @@ Take note of your API URLs. You are going to use them later.
 
 * Test endpoint for **Slack Notification**. Replace the URL with your own API URL.
 ```bash
-$ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+$ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 ![Slack Notification](images/slackNotif.png)
 * Test endpoint for **Gmail Notification**. Replace the URL with your own API URL. Replace the value of the parameters **sender, password, receiver, subject** with your own.
 ```bash
-$ curl -X POST -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+$ curl -X POST -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
 ```
 ![Email Notification](images/emailNotif.png)
 
@@ -298,11 +298,11 @@ env:
 - name: EMAIL_RECEIVER
   value: 'sendTo@gmail.com' # the receiver's email
 - name: OPENWHISK_API_URL_SLACK
-  value: 'https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack' # your API endpoint for slack notifications
+  value: 'https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack' # your API endpoint for slack notifications
 - name: SLACK_MESSAGE
   value: 'Your balance is over $50,000.00' # your custom message
 - name: OPENWHISK_API_URL_EMAIL
-  value: 'https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email' # your API endpoint for email notifications
+  value: 'hhttps://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email' # your API endpoint for email notifications
 ```
 
 
