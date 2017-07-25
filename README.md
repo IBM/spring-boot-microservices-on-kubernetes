@@ -84,10 +84,80 @@ The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-No
 
 The **Send-Notification** can be configured to send notification through gmail and/or Slack. Tne notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
 
+#### Code Snippets:
+_compute-interest-api/src/main/resources/_**application.properties**
+```
+8   spring.datasource.url = jdbc:mysql://${MYSQL_DB_HOST}:${MYSQL_DB_PORT}/dockercon2017
+9
+10  # Username and password
+11  spring.datasource.username = ${MYSQL_DB_USER}
+12  spring.datasource.password = ${MYSQL_DB_PASSWORD}
+```
+We define the datasource of our Spring Boot application in our properties file. We get the data from these environment variables on compute-interest-api.yaml.
+
+_compute-interest-api/src/main/java/officespace/models/_**Account.java**
+```java
+@Entity
+@Table(name = "account")
+public class Account {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+  	@NotNull
+  	private double balance;
+
+    public Account() {
+    }
+    public Account(long id) {
+      this.id = id;
+    }
+    public Account(double balance) {
+      this.balance = balance;
+    }
+
+    // Getter and setter methods
+    public long getId() {
+      return id;
+    }
+
+    public void setId(long value) {
+      this.id = value;
+    }
+
+    public double getBalance() {
+      return balance;
+    }
+
+    public void setBalance(double balance) {
+      this.balance = balance;
+    }
+
+}
+```
+
+We are using Spring Data JPA (Java Persistence API) to store and retrieve data in the MySQL database. We are storing the data in Account objects, annotated with `@Entity` to indicate that it is a JPA entity and `@Table` to indicate that it is located in a table named "account". It has an `id` and `balance` attributes. The `id` attribute is annotated with `@Id` so that it will be recognized as the object's ID and it's also annotated as `@GeneratedValue` to indicate that the id is generated automatically. The `balance` is annotated with `@NotNull` to indicate that the value shouldn't be null. The 3 constructors is used to create instances of Account to be saved to the database. The 4 methods is used to get or set values on the Account instance.
+
+```java
+import org.springframework.data.repository.CrudRepository;
+
+@Transactional
+public interface AccountDao extends CrudRepository<Account, Long> {
+
+  public Account findById(long id);
+
+}
+```
+
+A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao` 
+
+
+
 ## 2.1. Build your projects using Maven
 
 After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
-> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java`. It also sends a notification when the balance goes over $50,000. You can edit the number in the line `if (updatedBalance > 50000 && emailSent == false ) {`. After saving your changes, you can now then build the projects.
+> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java`. It also sends a notification when the balance goes over $50,000. You can edit the number in the line `if (updatedBalance > 50000 && emailSent == false )`. After saving your changes, you can now then build the projects.
 
 ```bash
 Go to containers/compute-interest-api
