@@ -153,6 +153,47 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 
 A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao`. Spring Data JPA allows you to define query methods by simply declaring their method signature. In this sample app, we define the method `findById(long id)` that returns an `Account` with an id in `(long id)`
 
+_compute-interest-api/src/main/java/officespace/models/_**Transaction.java**
+```java
+public class Transaction {
+
+	double amount;
+	double interestRate;
+
+	public double getAmount() {
+		return amount;
+	}
+  public double getInterestRate() {
+		return interestRate;
+	}
+  ...
+}
+```
+We will be using the Transaction model for the transactions we will receive in our `/computeinterest`. The api configurations will be done in the MainController.java.
+
+_compute-interest-api/src/main/java/officespace/controllers/_**MainController.java**
+
+```java
+@Controller
+public class MainController {
+  @RequestMapping(value= "/computeinterest", method = RequestMethod.POST, consumes="application/json")
+  @ResponseBody
+  public String computeInterest(@RequestBody(required = true) Transaction transaction) {
+    ...
+  }
+
+  @RequestMapping(value= "/", method = RequestMethod.GET)
+  @ResponseBody
+  public String index() {
+    return "Hello World!";
+  }
+
+  @Autowired
+  private AccountDao accountDao;
+}
+```
+
+Our controller is annotated with `@Controller` so that the Spring will know that this is our web controller and it will contain `@RequestMapping`. 2 Methods are annotated with `@RequestMapping` and this indicates the path, method and what that endpoint consumes. The first method is mapped `/computeinterest`as a POST request and should consume a json format. The `/computeinterest` path contains our logic for computing the fraction of cents and store that in the database. `@ResponseBody` means that the returned value of the `computeInterest(@RequestBody(required = true) Transaction transaction)` method will be the body of the HTTP response. `@RequestBody(required = true)` means that the request should contain data and that data is stored as a Transaction model for this method. The second method is mapped `/` as a GET request and will return "Hello World!". The field `accountDao` is annotated with `@Autowired` so that accountDao is instantiated by Spring. accountDao is then used in `computeInterest()` method.
 
 
 ## 2.1. Build your projects using Maven
