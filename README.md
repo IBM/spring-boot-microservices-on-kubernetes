@@ -214,7 +214,7 @@ public class TriggerEmail {
 }
 ```
 
-The send-notification's controller uses the annotation `@RestController`. This annotation is the same as `@Controller` except we would no longer need to add the annotation `@ResponseBody` to our request mapping methods. The method's returned value is implied to be the response body of the HTTP response. `@Value` is annotated to some of our fields and they are injected with the values from `application.properties` located in the resources folder. The `send()` method contains the logic for sending an email and/or slack notification. It is mapped at the path `/email`. This API is called on the `/computeinterest` API from the compute-interest-api application.
+The send-notification's controller uses the annotation `@RestController`. This annotation is the same as `@Controller` except we would no longer need to add the annotation `@ResponseBody` to our request mapping methods. The methods' returned value in the controller is implied to be the response body of the HTTP response. `@Value` is annotated to some of our fields and they are injected with the values from `application.properties` located in the resources folder. The `send()` method contains the logic for sending an email and/or slack notification. It is mapped at the path `/email`. This API is called on the `/computeinterest` API from the compute-interest-api application.
 
 ## 2.1. Build your projects using Maven
 
