@@ -196,6 +196,26 @@ public class MainController {
 Our controller is annotated with `@Controller` to indicate that this our web controller and it will contain `@RequestMapping`. 2 Methods are annotated with `@RequestMapping` and this defines the path, method and what that endpoint consumes. The first method is mapped `/computeinterest`as a POST request and should consume a json format. The `/computeinterest` path contains the method for our logic on computing the fraction of cents and store that in the database. `@ResponseBody` means that the returned value of the `computeInterest(@RequestBody(required = true) Transaction transaction)` method will be the body of the HTTP response. `@RequestBody(required = true)` means that the request should contain data and that data is stored as a Transaction model for this method. The second method is mapped `/` as a GET request and will return "Hello World!". The field `accountDao` is annotated with `@Autowired` so that accountDao is instantiated by Spring. accountDao is then used in `computeInterest()` method.
 
 
+_send-notification/src/main/java/com/example/controller/_**TriggerEmail.java**
+```java
+@RestController
+public class TriggerEmail {
+  ...
+  @Value("${spring.mail.username}")
+  private String sender;
+  ...
+  @Value("${spring.mail.password}")
+  private String password;
+
+  @RequestMapping(path = "/email", method = RequestMethod.POST)
+	private String send() {
+    ...
+  }
+}
+```
+
+The send-notification's controller uses the annotation `@RestController`. This annotation is the same as `@Controller` except we would no longer need to add the annotation `@ResponseBody` to our request mapping methods. The method's returned value is implied to be the response body of the HTTP response. `@Value` is annotated to some of our fields and they are injected with the values from `application.properties` located in the resources folder. The `send()` method contains the logic for sending an email and/or slack notification. It is mapped at the path `/email`. This API is called on the `/computeinterest` API from the compute-interest-api application.
+
 ## 2.1. Build your projects using Maven
 
 After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
