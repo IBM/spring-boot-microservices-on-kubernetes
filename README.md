@@ -139,6 +139,7 @@ public class Account {
 
 We are using Spring Data JPA (Java Persistence API) to store and retrieve data in the MySQL database. We are storing the data in Account objects, annotated with `@Entity` to indicate that it is a JPA entity and `@Table` to indicate that it is located in a table named "account". It has an `id` and `balance` attributes. The `id` attribute is annotated with `@Id` so that it will be recognized as the object's ID and it's also annotated as `@GeneratedValue` to indicate that the id is generated automatically. The `balance` is annotated with `@NotNull` to indicate that the value shouldn't be null. The 3 constructors is used to create instances of Account to be saved to the database. The 4 methods is used to get or set values on the Account instance.
 
+_compute-interest-api/src/main/java/officespace/models/_**AccountDao.java**
 ```java
 import org.springframework.data.repository.CrudRepository;
 
@@ -150,7 +151,7 @@ public interface AccountDao extends CrudRepository<Account, Long> {
 }
 ```
 
-A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao`
+A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao`. Spring Data JPA allows you to define query methods by simply declaring their method signature. In this sample app, we define the method `findById(long id)` that returns an `Account` with an id in `(long id)`
 
 
 
