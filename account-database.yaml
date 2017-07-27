@@ -33,15 +33,9 @@ spec:
         name: account-database
         env:
           - name: MYSQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: username
+            value: michaelbolton
           - name: MYSQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: password
+            value: password
           - name: MYSQL_ROOT_PASSWORD
             value: password
           - name: MYSQL_DATABASE

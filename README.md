@@ -53,28 +53,26 @@ deployment "account-database" created
 ```
 
 ## 1.2 Use Bluemix MySQL
-  Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
-  Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
-  ![images](images/mysqlservice.png)
-	You will need to modify **both** `compute-interest-api.yaml` and `account-summary.yaml` files. You need to modify their environment variables to use your MySQL database in Bluemix:
-  ```yaml
-  // compute-interest-api.yaml AND account-summary.yaml
-  env:
-      - name: OFFICESPACE_MYSQL_DB_USER
-        value: '<your-username>'
-      - name: OFFICESPACE_MYSQL_DB_PASSWORD
-        value: '<Your-database-password>'
-      - name: OFFICESPACE_MYSQL_DB_HOST
-        value: '<Your-database-host>'
-      - name: OFFICESPACE_MYSQL_DB_PORT
-        value: '<your-port-number>'
-  ```
-  **IMPORTANT:** You will also need to put in `'bluemix'` in the environment `MYSQL_ENVIRONMENT` of compute-interest-api.yaml. This would make the **Spring Boot app of compute-interest-api** to select the right configuration for bluemix
-  ```yaml
-  // compute-interest-api.yaml
-      - name: MYSQL_ENVIRONMENT
-        value: 'bluemix'
-  ```
+Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
+Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
+![images](images/mysqlservice.png)
+You will need to apply these credentials as a Secrets in your Kubernetes cluster. It should be encoded in `base64`.
+Use the script `./scripts/create-secrets.sh`. You will be prompted to enter your credentials. This will encode the credentials you input and apply them in your cluster as Secrets.
+```bash
+$ ./scripts/create-secrets.sh
+Enter MySQL username:
+admin
+Enter MySQL password:
+password
+Enter MySQL host:
+hostname
+Enter MySQL port:
+23966
+secret "demo-credentials" created
+```
+
+_You can also use the `secrets.yaml` file and edit the data values in it to your own encoded credentials. Then do `kubectl apply -f secrets.yaml`._
+
 
 # 2. Create the Spring Boot Microservices
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
@@ -82,10 +80,11 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack. Tne notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. The notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
 
-#### Code Snippets:
-_compute-interest-api/src/main/resources/_**application.properties**
+The Spring Boot app is configured to use a MySQL database. The configuration is located in application.properties in `spring.datasource.*`
+
+*compute-interest-api/src/main/resources/application.properties*
 ```
 spring.datasource.url = jdbc:mysql://${MYSQL_DB_HOST}:${MYSQL_DB_PORT}/dockercon2017
 
@@ -93,128 +92,41 @@ spring.datasource.url = jdbc:mysql://${MYSQL_DB_HOST}:${MYSQL_DB_PORT}/dockercon
 spring.datasource.username = ${MYSQL_DB_USER}
 spring.datasource.password = ${MYSQL_DB_PASSWORD}
 ```
-We define the datasource of our Spring Boot application in our properties file. We get the data from these environment variables on compute-interest-api.yaml.
 
-_compute-interest-api/src/main/java/officespace/models/_**Account.java**
-```java
-@Entity
-@Table(name = "account")
-public class Account {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
-  	@NotNull
-  	private double balance;
-
-    public Account() {
-    }
-    public Account(long id) {
-      this.id = id;
-    }
-    public Account(double balance) {
-      this.balance = balance;
-    }
-
-    // Getter and setter methods
-    public long getId() {
-      return id;
-    }
-
-    public void setId(long value) {
-      this.id = value;
-    }
-
-    public double getBalance() {
-      return balance;
-    }
-
-    public void setBalance(double balance) {
-      this.balance = balance;
-    }
-
-}
+The `application.properties` is configured to use MYSQL_DB_* environment variables. These are defined in the `compute-interest-api.yaml` file.
+*compute-interest-api.yaml*
+```yaml
+spec:
+  containers:
+  - image: anthonyamanse/compute-interest-api:secrets
+    imagePullPolicy: Always
+    name: compute-interest-api
+    env:
+      - name: MYSQL_DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: username
+      - name: MYSQL_DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: password
+      - name: MYSQL_DB_HOST
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: host
+      - name: MYSQL_DB_PORT
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: port
+    ports:
+    - containerPort: 8080
 ```
 
-We are using Spring Data JPA (Java Persistence API) to store and retrieve data in the MySQL database. We are storing the data in Account objects, annotated with `@Entity` to indicate that it is a JPA entity and `@Table` to indicate that it is located in a table named "account". It has an `id` and `balance` attributes. The `id` attribute is annotated with `@Id` so that it will be recognized as the object's ID and it's also annotated as `@GeneratedValue` to indicate that the id is generated automatically. The `balance` is annotated with `@NotNull` to indicate that the value shouldn't be null. The 3 constructors is used to create instances of Account to be saved to the database. The 4 methods is used to get or set values on the Account instance.
-
-_compute-interest-api/src/main/java/officespace/models/_**AccountDao.java**
-```java
-import org.springframework.data.repository.CrudRepository;
-
-@Transactional
-public interface AccountDao extends CrudRepository<Account, Long> {
-
-  public Account findById(long id);
-
-}
-```
-
-A feature of Spring Data JPA is the ability to create repository implementations automatically from a repository interface. This stores and retrieves data from the MySQL database. `AccountDao`. Spring Data JPA allows you to define query methods by simply declaring their method signature. In this sample app, we define the method `findById(long id)` that returns an `Account` with an id in `(long id)`
-
-_compute-interest-api/src/main/java/officespace/models/_**Transaction.java**
-```java
-public class Transaction {
-
-	double amount;
-	double interestRate;
-
-	public double getAmount() {
-		return amount;
-	}
-  public double getInterestRate() {
-		return interestRate;
-	}
-  ...
-}
-```
-We will be using the Transaction model for the transactions we will receive in our `/computeinterest`. The api configurations will be done in the MainController.java.
-
-_compute-interest-api/src/main/java/officespace/controllers/_**MainController.java**
-
-```java
-@Controller
-public class MainController {
-  @RequestMapping(value= "/computeinterest", method = RequestMethod.POST, consumes="application/json")
-  @ResponseBody
-  public String computeInterest(@RequestBody(required = true) Transaction transaction) {
-    ...
-  }
-
-  @RequestMapping(value= "/", method = RequestMethod.GET)
-  @ResponseBody
-  public String index() {
-    return "Hello World!";
-  }
-
-  @Autowired
-  private AccountDao accountDao;
-}
-```
-
-Our controller is annotated with `@Controller` to indicate that this our web controller and it will contain `@RequestMapping`. 2 Methods are annotated with `@RequestMapping` and this defines the path, method and what that endpoint consumes. The first method is mapped `/computeinterest`as a POST request and should consume a json format. The `/computeinterest` path contains the method for our logic on computing the fraction of cents and store that in the database. `@ResponseBody` means that the returned value of the `computeInterest(@RequestBody(required = true) Transaction transaction)` method will be the body of the HTTP response. `@RequestBody(required = true)` means that the request should contain data and that data is stored as a Transaction model for this method. The second method is mapped `/` as a GET request and will return "Hello World!". The field `accountDao` is annotated with `@Autowired` so that accountDao is instantiated by Spring. accountDao is then used in `computeInterest()` method.
-
-
-_send-notification/src/main/java/com/example/controller/_**TriggerEmail.java**
-```java
-@RestController
-public class TriggerEmail {
-  ...
-  @Value("${spring.mail.username}")
-  private String sender;
-  ...
-  @Value("${spring.mail.password}")
-  private String password;
-
-  @RequestMapping(path = "/email", method = RequestMethod.POST)
-	private String send() {
-    ...
-  }
-}
-```
-
-The send-notification's controller uses the annotation `@RestController`. This annotation is the same as `@Controller` except we would no longer need to add the annotation `@ResponseBody` to our request mapping methods. The methods' returned value in the controller is implied to be the response body of the HTTP response. `@Value` is annotated to some of our fields and they are injected with the values from `application.properties` located in the resources folder. The `send()` method contains the logic for sending an email and/or slack notification. It is mapped at the path `/email`. This API is called on the `/computeinterest` API from the compute-interest-api application.
+The YAML file is already configured to get the values from the Kubernetes Secrets that was created earlier. This will be used by the Spring Boot application in `application.properties.`
 
 ## 2.1. Build your projects using Maven
 
