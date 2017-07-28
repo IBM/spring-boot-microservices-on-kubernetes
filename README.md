@@ -86,7 +86,7 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack. The notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. The notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-use-openwhisk-action-with-notification-service) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
 
 The Spring Boot app is configured to use a MySQL database. The configuration is located in application.properties in `spring.datasource.*`
 
@@ -282,7 +282,7 @@ env:
 - name: SLACK_MESSAGE
   value: 'Your balance is over $50,000.00' # your custom message
 - name: OPENWHISK_API_URL_EMAIL
-  value: 'hhttps://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email' # your API endpoint for email notifications
+  value: 'https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email' # your API endpoint for email notifications
 ```
 
 
