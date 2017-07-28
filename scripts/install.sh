@@ -25,6 +25,7 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 function cluster_setup() {
 bx cs workers anthony-cluster-travis
 $(bx cs cluster-config anthony-cluster-travis | grep export)
+kubectl delete --ignore-not-found=true -f secrets.yaml
 kubectl delete --ignore-not-found=true -f account-database.yaml
 kubectl delete --ignore-not-found=true -f account-summary.yaml
 kubectl delete --ignore-not-found=true -f compute-interest-api.yaml
@@ -39,6 +40,7 @@ done
 }
 
 function initial_setup() {
+kubectl apply -f secrets.yaml
 echo "Creating MySQL Database..."
 kubectl create -f account-database.yaml
 echo "Creating Spring Boot App..."
