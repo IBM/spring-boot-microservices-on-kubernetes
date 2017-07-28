@@ -13,7 +13,7 @@ sample-repo:
   service_id: githubpublic
   parameters:
     repo_name: "{{name}}"
-    repo_url: https://github.com/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes.git
+    repo_url: https://github.com/IBM/spring-boot-microservices-on-kubernetes.git
     type: clone
     has_issues: false
 

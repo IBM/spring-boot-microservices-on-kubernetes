@@ -28,10 +28,10 @@ async.retry({
         interval: 1000
     },
     function(callback) {
-        var hostName = process.env.OFFICESPACE_MYSQL_DB_HOST || "account-database";
-        var portNumber = process.env.OFFICESPACE_MYSQL_DB_PORT || "3306";
-        var username = process.env.OFFICESPACE_MYSQL_DB_USER || "michaelbolton";
-        var password = process.env.OFFICESPACE_MYSQL_DB_PASSWORD || "password";
+        var hostName = process.env.MYSQL_DB_HOST || "account-database";
+        var portNumber = process.env.MYSQL_DB_PORT || "3306";
+        var username = process.env.MYSQL_DB_USER || "michaelbolton";
+        var password = process.env.MYSQL_DB_PASSWORD || "password";
 
         var client = mysql.createConnection({
             host: hostName,

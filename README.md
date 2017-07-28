@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes.svg?branch=master)](https://travis-ci.org/IBM/OfficeSpace-Spring-Boot-Microservices-on-Kubernetes)
+[![Build Status](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes.svg?branch=master)](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes)
 # Build and deploy Java Spring Boot microservices on Kubernetes
 
 Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications.
@@ -45,36 +45,40 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
 * There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL**
 
 ## 1.1 Use MySQL in container
-**NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
 ```bash
 $ kubectl create -f account-database.yaml
 service "account-database" created
 deployment "account-database" created
 ```
+Default credentials are already encoded in base64 in secrets.yaml.
+> Encoding in base64 does not encrypt or hide your secrets. Do not put this in your Github.
+
+```
+$ kubectl apply -f secrets.yaml
+secret "demo-credentials" created
+```
 
 ## 1.2 Use Bluemix MySQL
-  Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
-  Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
-  ![images](images/mysqlservice.png)
-	You will need to modify **both** `compute-interest-api.yaml` and `account-summary.yaml` files. You need to modify their environment variables to use your MySQL database in Bluemix:
-  ```yaml
-  // compute-interest-api.yaml AND account-summary.yaml
-  env:
-      - name: OFFICESPACE_MYSQL_DB_USER
-        value: '<your-username>'
-      - name: OFFICESPACE_MYSQL_DB_PASSWORD
-        value: '<Your-database-password>'
-      - name: OFFICESPACE_MYSQL_DB_HOST
-        value: '<Your-database-host>'
-      - name: OFFICESPACE_MYSQL_DB_PORT
-        value: '<your-port-number>'
-  ```
-  **IMPORTANT:** You will also need to put in `'bluemix'` in the environment `MYSQL_ENVIRONMENT` of compute-interest-api.yaml. This would make the **Spring Boot app of compute-interest-api** to select the right configuration for bluemix
-  ```yaml
-  // compute-interest-api.yaml
-      - name: MYSQL_ENVIRONMENT
-        value: 'bluemix'
-  ```
+Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
+Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
+![images](images/mysqlservice.png)
+You will need to apply these credentials as a Secrets in your Kubernetes cluster. It should be encoded in `base64`.
+Use the script `./scripts/create-secrets.sh`. You will be prompted to enter your credentials. This will encode the credentials you input and apply them in your cluster as Secrets.
+```bash
+$ ./scripts/create-secrets.sh
+Enter MySQL username:
+admin
+Enter MySQL password:
+password
+Enter MySQL host:
+hostname
+Enter MySQL port:
+23966
+secret "demo-credentials" created
+```
+
+_You can also use the `secrets.yaml` file and edit the data values in it to your own base64 encoded credentials. Then do `kubectl apply -f secrets.yaml`._
+
 
 # 2. Create the Spring Boot Microservices
 You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
@@ -82,12 +86,58 @@ If you want to modify the Spring Boot apps, you will need to do it before buildi
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack. Tne notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#using-openwhisk-action-with-slack-notification) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. The notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-use-openwhisk-action-with-notification-service) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+
+The Spring Boot app is configured to use a MySQL database. The configuration is located in application.properties in `spring.datasource.*`
+
+*compute-interest-api/src/main/resources/application.properties*
+```
+spring.datasource.url = jdbc:mysql://${MYSQL_DB_HOST}:${MYSQL_DB_PORT}/dockercon2017
+
+# Username and password
+spring.datasource.username = ${MYSQL_DB_USER}
+spring.datasource.password = ${MYSQL_DB_PASSWORD}
+```
+
+The `application.properties` is configured to use MYSQL_DB_* environment variables. These are defined in the `compute-interest-api.yaml` file.
+*compute-interest-api.yaml*
+```yaml
+spec:
+  containers:
+  - image: anthonyamanse/compute-interest-api:secrets
+    imagePullPolicy: Always
+    name: compute-interest-api
+    env:
+      - name: MYSQL_DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: username
+      - name: MYSQL_DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: password
+      - name: MYSQL_DB_HOST
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: host
+      - name: MYSQL_DB_PORT
+        valueFrom:
+          secretKeyRef:
+            name: demo-credentials
+            key: port
+    ports:
+    - containerPort: 8080
+```
+
+The YAML file is already configured to get the values from the Kubernetes Secrets that was created earlier. This will be used by the Spring Boot application in `application.properties.`
 
 ## 2.1. Build your projects using Maven
 
 After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
-> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java`. It also sends a notification when the balance goes over $50,000. You can edit the number in the line `if (updatedBalance > 50000 && emailSent == false ) {`. After saving your changes, you can now then build the projects.
+> Note: The compute-interest-api multiplies the fraction of the pennies to x100,000 for simulation purposes. You can edit/remove the line `remainingInterest *= 100000` in `src/main/java/officespace/controller/MainController.java`. It also sends a notification when the balance goes over $50,000. You can edit the number in the line `if (updatedBalance > 50000 && emailSent == false )`. After saving your changes, you can now then build the projects.
 
 ```bash
 Go to containers/compute-interest-api
@@ -179,27 +229,27 @@ $ wsk action invoke sendEmailNotification --param sender [sender's email] --para
 You should receive a slack message and receive an email respectively.
 
 #### 2.3.2.3 Create REST API for Actions
-You can map REST API endpoints for your created actions using `wsk api-experimental create`. The syntax for it is `wsk api-experimental create [base-path] [api-path] [verb (GET PUT POST etc)] [action name]`
+You can map REST API endpoints for your created actions using `wsk api create`. The syntax for it is `wsk api create [base-path] [api-path] [verb (GET PUT POST etc)] [action name]`
 * Create endpoint for **Slack Notification**
 ```bash
-$ wsk api-experimental create /v1 /slack post sendSlackNotification
+$ wsk api create /v1 /slack POST sendSlackNotification
 ok: created API /v1/email POST for action /_/sendEmailNotification
-https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 * Create endpoint for **Gmail Notification**
 ```bash
-$ wsk api-experimental create /v1 /email post sendEmailNotification
+$ wsk api create /v1 /email POST sendEmailNotification
 ok: created API /v1/email POST for action /_/sendEmailNotification
-https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
 ```
 
 You can view a list of your APIs with this command:
 ```bash
-$ wsk api-experimental list
+$ wsk api list
 ok: APIs
 Action                                      Verb  API Name  URL
-/Anthony.Amanse_dev/sendEmailNotificatio    post       /v1  https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
-/Anthony.Amanse_dev/testDefault             post       /v1  https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+/Anthony.Amanse_dev/sendEmailNotificatio    post       /v1  https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
+/Anthony.Amanse_dev/testDefault             post       /v1  https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 
 Take note of your API URLs. You are going to use them later.
@@ -208,12 +258,12 @@ Take note of your API URLs. You are going to use them later.
 
 * Test endpoint for **Slack Notification**. Replace the URL with your own API URL.
 ```bash
-$ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack
+$ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 ![Slack Notification](images/slackNotif.png)
 * Test endpoint for **Gmail Notification**. Replace the URL with your own API URL. Replace the value of the parameters **sender, password, receiver, subject** with your own.
 ```bash
-$ curl -X POST -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email
+$ curl -X POST -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
 ```
 ![Email Notification](images/emailNotif.png)
 
@@ -228,11 +278,11 @@ env:
 - name: EMAIL_RECEIVER
   value: 'sendTo@gmail.com' # the receiver's email
 - name: OPENWHISK_API_URL_SLACK
-  value: 'https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/slack' # your API endpoint for slack notifications
+  value: 'https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack' # your API endpoint for slack notifications
 - name: SLACK_MESSAGE
   value: 'Your balance is over $50,000.00' # your custom message
 - name: OPENWHISK_API_URL_EMAIL
-  value: 'https://XXX-YYY-ZZZ-gws.api-gw.mybluemix.net/v1/email' # your API endpoint for email notifications
+  value: 'https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email' # your API endpoint for email notifications
 ```
 
 
