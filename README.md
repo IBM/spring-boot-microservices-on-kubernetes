@@ -51,6 +51,8 @@ service "account-database" created
 deployment "account-database" created
 ```
 Default credentials are already encoded in base64 in secrets.yaml.
+> Encoding in base64 does not encrypt or hide your secrets. Do not put this in your Github.
+
 ```
 $ kubectl apply -f secrets.yaml
 secret "demo-credentials" created
@@ -75,7 +77,7 @@ Enter MySQL port:
 secret "demo-credentials" created
 ```
 
-_You can also use the `secrets.yaml` file and edit the data values in it to your own encoded credentials. Then do `kubectl apply -f secrets.yaml`._
+_You can also use the `secrets.yaml` file and edit the data values in it to your own base64 encoded credentials. Then do `kubectl apply -f secrets.yaml`._
 
 
 # 2. Create the Spring Boot Microservices
