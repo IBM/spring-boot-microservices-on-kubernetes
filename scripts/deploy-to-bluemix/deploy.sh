@@ -16,6 +16,7 @@ if [ $? -ne 0 ]; then
 fi
 eval "$exp"
 
+kubectl delete --ignore-not-found=true -f secrets.yaml
 kubectl delete --ignore-not-found=true -f account-database.yaml
 kubectl delete --ignore-not-found=true -f account-summary.yaml
 kubectl delete --ignore-not-found=true -f compute-interest-api.yaml
@@ -28,6 +29,7 @@ do
     kuber=$(kubectl get pods -l app=offce-space)
 done
 
+kubectl apply -f secrets.yaml
 echo "Creating MySQL Database..."
 kubectl create -f account-database.yaml
 echo "Creating Spring Boot App..."
