@@ -45,11 +45,15 @@ The backend consists of the MySQL database and the Spring Boot app. You will als
 * There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL**
 
 ## 1.1 Use MySQL in container
-**NOTE:** Leave the environment variables blank in the `compute-interest-api.yaml` and `account-summary.yaml`
 ```bash
 $ kubectl create -f account-database.yaml
 service "account-database" created
 deployment "account-database" created
+```
+Default credentials are already encoded in base64 in secrets.yaml.
+```
+$ kubectl apply -f secrets.yaml
+secret "demo-credentials" created
 ```
 
 ## 1.2 Use Bluemix MySQL
