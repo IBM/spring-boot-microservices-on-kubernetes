@@ -2,7 +2,7 @@
 
 echo "Creating Office Space App"
 
-IP_ADDR=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{ print $2 }')
+IP_ADDR=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{ print $2 }' | head -1)
 if [ -z $IP_ADDR ]; then
   echo "$CLUSTER_NAME not created or workers not ready"
   exit 1
@@ -66,7 +66,7 @@ kubectl create -f transaction-generator.yaml
 sleep 5s
 
 echo "Getting IP and Port"
-kubectl get nodes
+bx cs workers $CLUSTER_NAME
 NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
 if [ -z "$NODEPORT" ]

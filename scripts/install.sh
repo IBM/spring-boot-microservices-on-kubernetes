@@ -23,8 +23,8 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 }
 
 function cluster_setup() {
-bx cs workers anthony-cluster-travis
-$(bx cs cluster-config anthony-cluster-travis | grep export)
+bx cs workers $CLUSTER_NAME
+$(bx cs cluster-config $CLUSTER_NAME | grep export)
 kubectl delete --ignore-not-found=true -f secrets.yaml
 kubectl delete --ignore-not-found=true -f account-database.yaml
 kubectl delete --ignore-not-found=true -f account-summary.yaml
@@ -66,8 +66,8 @@ sleep 5s
 
 function getting_ip_port() {
 echo "Getting IP and Port"
-IP=$(kubectl get nodes | grep Ready | awk '{print $1}')
-kubectl get nodes
+IP=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{print $2}' | head -1)
+bx cs workers $CLUSTER_NAME
 NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
 if [ -z "$IP" ] || [ -z "$NODEPORT" ]
