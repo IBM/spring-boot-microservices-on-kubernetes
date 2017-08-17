@@ -326,10 +326,6 @@ You can access your app publicly through your Cluster IP and the NodePort. The N
 
 * To find your IP:
 ```bash
-$ kubectl get nodes
-NAME             STATUS    AGE
-169.47.241.213   Ready     7d
----OR---
 $ bx cs workers <cluster-name>
 ID                                                 Public IP        Private IP      Machine Type   State    Status   
 kube-dal10-paac005a5fa6c44786b5dfb3ed8728548f-w1   169.47.241.213   10.177.155.13   free           normal   Ready  
