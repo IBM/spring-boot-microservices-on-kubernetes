@@ -65,6 +65,8 @@ $ kubectl apply -f secrets.yaml
 secret "demo-credentials" created
 ```
 
+Continue on in [Step 2](#2-create-the-spring-boot-microservices).
+
 ## 1.2 Use Bluemix MySQL
 Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
 Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
@@ -86,6 +88,7 @@ secret "demo-credentials" created
 
 _You can also use the `secrets.yaml` file and edit the data values in it to your own base64 encoded credentials. Then do `kubectl apply -f secrets.yaml`._
 
+Continue on in [Step 2](#2-create-the-spring-boot-microservices).
 
 # 2. Create the Spring Boot Microservices
 You will need to have [Maven installed in your environment](https://maven.apache.org/index.html).
@@ -185,7 +188,10 @@ Once you have successfully pushed your images, you will need to modify the yaml 
     - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
 ```
 
-To enable the notification service, you will need to modify the environment variables in the `send-notification.yaml` file. You have **two options** to choose from, either [2.3.1 Use default email service](#231-use-default-email-service-gmail-with-notification-service) **OR** [2.3.2 Use OpenWhisk Actions](#232-use-openwhisk-action-with-notification-service).
+There are two types of notifications possible, either
+[2.3.1 Use default email service](#231-use-default-email-service-gmail-with-notification-service)
+**OR**
+[2.3.2 Use OpenWhisk Actions](#232-use-openwhisk-action-with-notification-service).
 
 ### 2.3.1 Use default email service (gmail) with Notification service
 
