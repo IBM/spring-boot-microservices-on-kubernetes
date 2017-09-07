@@ -40,9 +40,16 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 #### [Troubleshooting](#troubleshooting-1)
 
 # 1. Create the Database service
-The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
 
-* There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL**
+The backend consists of a MySQL database and the Spring Boot app. Each
+microservice has a Deployment and a Service. The deployment manages
+the pods started for each microservice. The Service creates a stable
+DNS entry for each microservice so they can reference their
+dependencies by name.
+
+* There are two ways to create the MySQL database backend:
+  **[Use MySQL in container](#11-use-mysql-in-container)** *OR*
+  **[Use Bluemix MySQL](#12-use-bluemix-mysql)**
 
 ## 1.1 Use MySQL in container
 ```bash
