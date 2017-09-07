@@ -40,9 +40,16 @@ Please follow the [Toolchain instructions](https://github.com/IBM/container-jour
 #### [Troubleshooting](#troubleshooting-1)
 
 # 1. Create the Database service
-The backend consists of the MySQL database and the Spring Boot app. You will also be creating a deployment controller for each to provision their Pods.
 
-* There are two ways to create the MySQL database backend: **Use MySQL in a container in your cluster** *OR* **Use Bluemix MySQL**
+The backend consists of a MySQL database and the Spring Boot app. Each
+microservice has a Deployment and a Service. The deployment manages
+the pods started for each microservice. The Service creates a stable
+DNS entry for each microservice so they can reference their
+dependencies by name.
+
+* There are two ways to create the MySQL database backend:
+  **[Use MySQL in container](#11-use-mysql-in-container)** *OR*
+  **[Use Bluemix MySQL](#12-use-bluemix-mysql)**
 
 ## 1.1 Use MySQL in container
 ```bash
@@ -58,11 +65,13 @@ $ kubectl apply -f secrets.yaml
 secret "demo-credentials" created
 ```
 
+Continue on in [Step 2](#2-create-the-spring-boot-microservices).
+
 ## 1.2 Use Bluemix MySQL
 Provision Compose for MySQL in Bluemix via https://console.ng.bluemix.net/catalog/services/compose-for-mysql
 Go to Service credentials and view your credentials. Your MySQL hostname, port, user, and password are under your credential uri and it should look like this
 ![images](images/mysqlservice.png)
-You will need to apply these credentials as a Secrets in your Kubernetes cluster. It should be encoded in `base64`.
+You will need to apply these credentials as a Secret in your Kubernetes cluster. It should be `base64` encoded.
 Use the script `./scripts/create-secrets.sh`. You will be prompted to enter your credentials. This will encode the credentials you input and apply them in your cluster as Secrets.
 ```bash
 $ ./scripts/create-secrets.sh
@@ -79,16 +88,15 @@ secret "demo-credentials" created
 
 _You can also use the `secrets.yaml` file and edit the data values in it to your own base64 encoded credentials. Then do `kubectl apply -f secrets.yaml`._
 
+Continue on in [Step 2](#2-create-the-spring-boot-microservices).
 
 # 2. Create the Spring Boot Microservices
-You will need to have [Maven installed on your environment](https://maven.apache.org/index.html).
+You will need to have [Maven installed in your environment](https://maven.apache.org/index.html).
 If you want to modify the Spring Boot apps, you will need to do it before building the Java project and the docker image.
 
 The Spring Boot Microservices are the **Compute-Interest-API** and the **Send-Notification**.
 
-The **Send-Notification** can be configured to send notification through gmail and/or Slack. The notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-use-openwhisk-action-with-notification-service) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
-
-The Spring Boot app is configured to use a MySQL database. The configuration is located in application.properties in `spring.datasource.*`
+**Compute-Interest-API** is a Spring Boot app configured to use a MySQL database. The configuration is located in application.properties in `spring.datasource.*`
 
 *compute-interest-api/src/main/resources/application.properties*
 ```
@@ -134,6 +142,8 @@ spec:
 
 The YAML file is already configured to get the values from the Kubernetes Secrets that was created earlier. This will be used by the Spring Boot application in `application.properties.`
 
+The **Send-Notification** can be configured to send notification through gmail and/or Slack. The notification only pushes once when the account balance on the MySQL database goes over $50,000. Default is the gmail option. You can also use event driven technology, in this case [OpenWhisk](http://openwhisk.org/) to send emails and slack messages. To use OpenWhisk with your notification microservice, please follow the steps [here](#232-use-openwhisk-action-with-notification-service) before building and deploying the microservice images. Otherwise, you can proceed if you choose to only have an email notification setup.
+
 ## 2.1. Build your projects using Maven
 
 After Maven has successfully built the Java project, you will need to build the Docker image using the provided **Dockerfile** in their respective folders.
@@ -178,7 +188,10 @@ Once you have successfully pushed your images, you will need to modify the yaml 
     - image: registry.ng.bluemix.net/<namespace>/send-notification # replace with your image name
 ```
 
-To enable the notification service, you will need to modify the environment variables in the `send-notification.yaml` file. You have **two options** to choose from, either [2.3.1 Use default email service](#231-use-default-email-service-gmail-with-notification-service) **OR** [2.3.2 Use OpenWhisk Actions](#232-use-openwhisk-action-with-notification-service).
+There are two types of notifications possible, either
+[2.3.1 Use default email service](#231-use-default-email-service-gmail-with-notification-service)
+**OR**
+[2.3.2 Use OpenWhisk Actions](#232-use-openwhisk-action-with-notification-service).
 
 ### 2.3.1 Use default email service (gmail) with Notification service
 
