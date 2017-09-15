@@ -72,32 +72,35 @@ done
 
 echo "Creating Transaction Generator..."
 kubectl create -f transaction-generator.yaml
-sleep 5s
+echo "Waiting for pods to be running"
+i=0
+while [[ $(kubectl get pods | grep -c Running) -ne 3 ]]; do
+    if [[ ! "$i" -lt 24 ]]; then
+        echo "Timeout waiting on pods to be ready. Test FAILED"
+        exit 1
+    fi
+    sleep 10
+    echo "...$i * 10 seconds elapsed..."
+    ((i++))
+done
+echo "All pods are running"
+
 }
 
 function getting_ip_port() {
 echo "Getting IP and Port"
 if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
-    IP="192.168.99.100"
+    IP=$(kubectl get svc | grep account-summary | awk '{print $2}')
+    echo "This is a pull request. Not using a bluemix cluster"
 else
     IP=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{print $2}' | head -1)
+    bx cs workers $CLUSTER_NAME
 fi
-bx cs workers $CLUSTER_NAME
 NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
 if [ -z "$IP" ] || [ -z "$NODEPORT" ]
 then
     echo "IP or NODEPORT not found"
-    exit 1
-fi
-if [[ "$TRAVIS_PULL_REQUEST" != "false" ]];
-then
-account_summary=$(kubectl get po -l tier=summary -o=jsonpath={'.items[0].metadata.name'})
-kubectl port-forward ${account_summary} 30080:80 &
-fi
-if ! curl -sS 127.0.0.1:$NODEPORT
-then
-    echo "TEST FAILED"
     exit 1
 fi
 kubectl get pods,svc -l app=office-space
