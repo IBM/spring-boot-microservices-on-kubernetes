@@ -166,7 +166,9 @@ If you plan to use Bluemix Container Registry, you will need to setup your accou
 You can also push it in [Docker Hub](https://hub.docker.com).
 
 ```bash
+# Do the build in containers/compute-interest-api
 $ docker build -t registry.ng.bluemix.net/<namespace>/compute-interest-api .
+# Do the build in containers/send-notification
 $ docker build -t registry.ng.bluemix.net/<namespace>/send-notification .
 $ docker push registry.ng.bluemix.net/<namespace>/compute-interest-api
 $ docker push registry.ng.bluemix.net/<namespace>/send-notification
