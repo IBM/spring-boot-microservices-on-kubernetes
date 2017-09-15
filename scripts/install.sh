@@ -78,7 +78,7 @@ sleep 5s
 function getting_ip_port() {
 echo "Getting IP and Port"
 if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
-    IP="127.0.0.1"
+    IP="192.168.99.100"
 else
     IP=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{print $2}' | head -1)
 fi
@@ -90,7 +90,12 @@ then
     echo "IP or NODEPORT not found"
     exit 1
 fi
-if ! curl -sS $IP:$NODEPORT
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]];
+then
+account_summary=$(kubectl get po -l tier=summary -o=jsonpath={'.items[0].metadata.name'})
+kubectl port-forward ${account_summary} 30080:80 &
+fi
+if ! curl -sS 127.0.0.1:$NODEPORT
 then
     echo "TEST FAILED"
     exit 1
@@ -102,7 +107,8 @@ echo "Travis has finished its build. Cleaning up..."
 }
 
 
-if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]];
+then
     kube_adm_setup
 else
     install_bluemix_cli
