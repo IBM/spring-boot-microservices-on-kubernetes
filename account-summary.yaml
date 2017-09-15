@@ -10,7 +10,7 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 80
-      nodePort: 30080
+      nodePort: 30081
   selector:
     app: office-space
     tier: summary
