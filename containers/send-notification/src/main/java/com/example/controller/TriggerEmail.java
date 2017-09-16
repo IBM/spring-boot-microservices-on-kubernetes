@@ -53,7 +53,7 @@ public class TriggerEmail {
 				helper.setFrom(sender);
 				helper.setReplyTo(sender);
 				helper.setSubject("Office-Space Notification");
-				helper.setText("Account Balance is now over $50,000. " + payload);
+				helper.setText("Account Balance is now over $50,000. " + payload.get("balance"));
 				mailSender.send(mail);
 				return "{\"message\": \"OK sent email via client\"}";
 			}
