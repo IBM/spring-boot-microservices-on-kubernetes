@@ -28,28 +28,32 @@ Office Spacee 앱을 직접 블루믹스에 배포하려면, 'Deploy to Bluemix'
 
 ## Steps
 1. [데이터베이스 서비스 생성](#1-데이터베이스-서비스-생성)  
-1.1 [컨테이너에서 MySQL 사용](#11-컨테이너에서-MySQL-사용) 또는  
-1.2 [Bluemix MySQL 사용](#12-Bluemix-MySQL-사용)  
-2. [Spring Boot 마이크로서비스 생성](#2-Spring-Boot-마이크로서비스-생성)  
-2.1 [Maven으로 프로젝트 빌드](#21-Maven으로-프로젝트-빌드)  
-2.2 [닥커 이미지 빌드 및 푸시](#22-닥커 이미지 빌드 및 푸시)  
+1.1 [컨테이너에서 MySQL 사용](#11-컨테이너에서-mysql-사용) 또는  
+1.2 [Bluemix MySQL 사용](#12-bluemix-mysql-사용)  
+2. [Spring Boot 마이크로서비스 생성](#2-spring-boot-마이크로서비스-생성)  
+2.1 [Maven으로 프로젝트 빌드](#21-maven으로-프로젝트-빌드)  
+2.2 [닥커 이미지 빌드 및 푸시](#22-닥커-이미지-빌드-및-푸시)  
 2.3 [Spring Boot 서비스를 위한 yaml 파일 수정](#23-compute-interest-apiyaml-및-send-notificationyaml-수정)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [알림 서비스로 기본 이메일 서비스 사용](#231-알림-서비스로-기본-이메일-서비스-사용-gmail) 또는  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [알림 서비스로 OpenWhisk Actions 사용](#232-알림-서비스로-OpenWhisk-Actions-사용)  
-2.4 [Spring Boot 마이크로서비스 배포](#24-Spring-Boot-마이크로서비스-배포)  
-3. [Frontend 서비스 작성](#3-Frontend-서비스-작성)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [알림 서비스로 OpenWhisk Actions 사용](#232-알림-서비스로-openwhisk-actions-사용)  
+2.4 [Spring Boot 마이크로서비스 배포](#24-spring-boot-마이크로서비스-배포)  
+3. [Frontend 서비스 작성](#3-frontend-서비스-작성)  
 4. [트랜잭션 생성 서비스 작성](#4-트랜잭션-생성-서비스-작성)  
 5. [애플리케이션 접근](#5-애플리케이션-접근)
 
-#### [문제 해결](#troubleshooting-1)
+https://github.com/hjjo/spring-boot-microservices-on-kubernetes/blob/master/README-ko.md#231-알림-서비스로-기본-이메일-서비스-사용-gmail
+
+https://github.com/hjjo/spring-boot-microservices-on-kubernetes/blob/master/README-ko.md#232-알림-서비스로-openwhisk-actions-사용
+
+#### [문제 해결](#문제-해결)
 
 # 1. 데이터베이스 서비스 생성
 
 백엔드 시스템은 MySQL 데이터베이스와 Spring Boot 애플리케이션으로 구성되어 있습니다. 각 마이크로서비스는 Deployment와 Service를 갖고 있습니다. Deployment는 각 마이크로서비스에 대해 시작된 Pod를 관리합니다. 서비스는 각 마이크로서비스에 대해 이름으로 dependency를 참조하도록 안정적인 DNS를 생성합니다.
 
 * MySQL 데이터베이스를 생성하는 방법은 두가지가 있습니다.:
-  **[컨테이너에서 MySQL 사용](#11-컨테이너에서-MySQL-사용)** *또는*
-  **[Bluemix MySQL 사용](#12-Bluemix-MySQL-사용)**
+  **[컨테이너에서 MySQL 사용](#11-컨테이너에서-mysql-사용)** *또는*
+  **[Bluemix MySQL 사용](#12-bluemix-mysql-사용)**
 
 ## 1.1 컨테이너에서 MySQL 사용
 ```bash
@@ -66,7 +70,7 @@ $ kubectl apply -f secrets.yaml
 secret "demo-credentials" created
 ```
 
-[Step 2](#2-Spring-Boot-마이크로서비스-생성)에서 계속 진행 하십시오.
+[Step 2](#2-spring-boot-마이크로서비스-생성)에서 계속 진행 하십시오.
 
 ## 1.2 Bluemix MySQL 사용
 https://console.ng.bluemix.net/catalog/services/compose-for-mysql를 통해 Bluemix에서 Compose for MySQL을 작성하십시오.
@@ -88,7 +92,7 @@ secret "demo-credentials" created
 
 _또한 `secrets.yaml` 파일을 수정하여 base64 인코딩된 신임정보를 직접 넣는 방법을 사용할 수 있습니다. 이 경우에는 `kubectl apply -f secrets.yaml` 를 수행하십시오._
 
-[Step 2](#2-Spring-Boot-마이크로서비스-생성)에서 계속 진행 하십시오.
+[Step 2](#2-spring-boot-마이크로서비스-생성)에서 계속 진행 하십시오.
 
 # 2. Spring Boot 마이크로서비스 생성
 [Maven이 설치되어 있어야 합니다.](https://maven.apache.org/index.html).
@@ -142,7 +146,7 @@ spec:
 
 이 YAML 파일은 이미 이전 단계에서 생성한 쿠버네티스 Secret으로부터 값을 얻도록 구성되어 있습니다. 이는 `application.properties`에 있는 Spring Boot 애플리케이션에서 사용될 것입니다.
 
-**Send-Notification** 은 gmail 그리고/또는 Slack을 통해 알림을 줄 수 있도록 구성되어 있습니다. 알림은 MySQL 데이터베이스의 계좌 잔액이 $50,000을 넘었을 때에 한번만 발송됩니다. 기본적으로는 gmail 옵션을 사용합니다. Event driven 기술을 사용할 수도 있습니다. 여기서는 [OpenWhisk](http://openwhisk.org/)를 사용하여 이메일과 슬랙 메세지를 보냅니다. 알림 마이크로서비스로 OpenWhisk를 사용하려면 마이크로서비스 이미지를 빌드 및 배포 하기 전에 [여기](#232-알림-서비스로-OpenWhisk-Actions-사용) 스텝을 따르십시오. 이메일 알림 설정만 사용하려면 그냥 진행하십시오.
+**Send-Notification** 은 gmail 그리고/또는 Slack을 통해 알림을 줄 수 있도록 구성되어 있습니다. 알림은 MySQL 데이터베이스의 계좌 잔액이 $50,000을 넘었을 때에 한번만 발송됩니다. 기본적으로는 gmail 옵션을 사용합니다. Event driven 기술을 사용할 수도 있습니다. 여기서는 [OpenWhisk](http://openwhisk.org/)를 사용하여 이메일과 슬랙 메세지를 보냅니다. 알림 마이크로서비스로 OpenWhisk를 사용하려면 마이크로서비스 이미지를 빌드 및 배포 하기 전에 [여기](#232-알림-서비스로-openwhisk-actions-사용) 스텝을 따르십시오. 이메일 알림 설정만 사용하려면 그냥 진행하십시오.
 
 ## 2.1. Maven으로 프로젝트 빌드
 
@@ -192,7 +196,7 @@ $ docker push registry.ng.bluemix.net/<namespace>/send-notification
 두가지 타입의 알림이 가능합니다.
 [2.3.1 Use default email service](#231-알림-서비스로-기본-이메일-서비스-사용-gmail)
 **또는**
-[2.3.2 Use OpenWhisk Actions](#232-알림-서비스로-OpenWhisk-Actions-사용).
+[2.3.2 Use OpenWhisk Actions](#232-알림-서비스로-openwhisk-actions-사용).
 
 ### 2.3.1 알림 서비스로 기본 이메일 서비스 사용 (gmail)
 
@@ -207,7 +211,7 @@ $ docker push registry.ng.bluemix.net/<namespace>/send-notification
        value: 'sendTo@gmail.com' # 수신자의 이메일 주소로 변경하십시오.
 ```
 
-이제 [Step 2.4](#24-deploy-the-spring-boot-microservices)를 진행하십시오.
+이제 [Step 2.4](#24-spring-boot-마이크로서비스-배포)를 진행하십시오.
 
 ### 2.3.2 알림 서비스로 OpenWhisk Actions 사용
 이 섹션에서 필요한 것들:
@@ -330,9 +334,9 @@ service "account-summary" created
 deployment "account-summary" created
 ```
 
-# 4. 트랜젝션 생성 서비스 작성
-트랜젝션 생성 서비스는 Python 앱으로 축적된 이자로 랜덤한 트랜젝션을 생성합니다.
-* 트랜젝션 생성을 위한 **Python** 앱 작성:
+# 4. 트랜잭션 생성 서비스 작성
+트랜잭션 생성 서비스는 Python 앱으로 축적된 이자로 랜덤한 트랜잭션 생성합니다.
+* 트랜잭션 생성을 위한 **Python** 앱 작성:
 ```bash
 $ kubectl create -f transaction-generator.yaml
 service "transaction-generator" created
