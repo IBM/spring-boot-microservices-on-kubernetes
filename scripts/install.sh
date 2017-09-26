@@ -74,7 +74,7 @@ echo "Creating Transaction Generator..."
 kubectl create -f transaction-generator.yaml
 echo "Waiting for pods to be running"
 i=0
-while [[ $(kubectl get pods | grep -c Running) -ne 3 ]]; do
+while [[ $(kubectl get pods | grep -c Running) -ne 4 ]]; do
     if [[ ! "$i" -lt 24 ]]; then
         echo "Timeout waiting on pods to be ready. Test FAILED"
         exit 1
@@ -90,23 +90,40 @@ echo "All pods are running"
 function getting_ip_port() {
 echo "Getting IP and Port"
 if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
-    IP=$(kubectl get svc | grep account-summary | awk '{print $2}')
+    IP=127.0.0.1
+    NODEPORT=8080/api/v1/namespaces/default/services/account-summary/proxy/
     echo "This is a pull request. Not using a bluemix cluster"
 else
     IP=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{print $2}' | head -1)
     bx cs workers $CLUSTER_NAME
+    NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 fi
-NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
 if [ -z "$IP" ] || [ -z "$NODEPORT" ]
 then
     echo "IP or NODEPORT not found"
     exit 1
 fi
+TRIES=0
+while true
+do
+code=$(curl -sw '%{http_code}' http://$IP:$NODEPORT -o /dev/null)
+    if [ "$code" = "200" ]; then
+        echo "Account Summary is up."
+        break
+    fi
+    if [ $TRIES -eq 10 ]
+    then
+        echo "Failed finding Account Summary. Error code is $code"
+        exit 1
+    fi
+    TRIES=$((TRIES+1))
+    sleep 5s
+done
+
 kubectl get pods,svc -l app=office-space
 echo "Spring boot app found at http://$IP:$NODEPORT"
-echo "Everything seems to be working fine..."
-echo "Travis has finished its build. Cleaning up..."
+echo "Travis has finished its build."
 }
 
 
