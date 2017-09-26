@@ -1,8 +1,10 @@
 language: bash
 script: true
 sudo: required
+services:
+  - docker
 before_install:
 - bash scripts/install.sh
 group: stable
-dist: precise
+dist: trusty
 os: linux

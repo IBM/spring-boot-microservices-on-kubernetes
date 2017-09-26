@@ -60,15 +60,15 @@ public class MainController {
       if (updatedBalance > 50000 && emailSent == false ) {
         RestTemplate rest = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        String server = "http://send-notification:8080/email";
+        String server = "http://send-notification:8080/";
         headers.add("Content-Type", "application/json");
         headers.add("Accept", "*/*");
-        String json = "{}";
+        String json = "{\"balance\": \"" + String.format("%.2f", updatedBalance) + "\"}";
 
         HttpEntity<String> requestEntity = new HttpEntity<String>(json, headers);
-        ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = rest.exchange(server + "email", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntitySlack = rest.exchange(server + "slack", HttpMethod.POST, requestEntity, String.class);
         this.emailSent = true;
-        return responseEntity.getBody();
       }
 
       return interestResult;

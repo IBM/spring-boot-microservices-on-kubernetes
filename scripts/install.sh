@@ -25,18 +25,29 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 function cluster_setup() {
 bx cs workers $CLUSTER_NAME
 $(bx cs cluster-config $CLUSTER_NAME | grep export)
-kubectl delete --ignore-not-found=true -f secrets.yaml
-kubectl delete --ignore-not-found=true -f account-database.yaml
-kubectl delete --ignore-not-found=true -f account-summary.yaml
-kubectl delete --ignore-not-found=true -f compute-interest-api.yaml
-kubectl delete --ignore-not-found=true -f transaction-generator.yaml
-kuber=$(kubectl get pods -l app=office-space)
-while [ ${#kuber} -ne 0 ]
-do
-    sleep 5s
-    kubectl get pods -l app=office-space
-    kuber=$(kubectl get pods -l app=offce-space)
-done
+}
+
+function clean_setup() {
+    kubectl delete --ignore-not-found=true -f secrets.yaml
+    kubectl delete --ignore-not-found=true -f account-database.yaml
+    kubectl delete --ignore-not-found=true -f account-summary.yaml
+    kubectl delete --ignore-not-found=true -f compute-interest-api.yaml
+    kubectl delete --ignore-not-found=true -f transaction-generator.yaml
+    kuber=$(kubectl get pods -l app=office-space)
+    while [ ${#kuber} -ne 0 ]
+    do
+        sleep 5s
+        kubectl get pods -l app=office-space
+        kuber=$(kubectl get pods -l app=offce-space)
+    done
+}
+
+function kube_adm_setup() {
+    wget https://cdn.rawgit.com/Mirantis/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.7.sh
+    chmod 0755 dind-cluster-v1.7.sh
+    ./dind-cluster-v1.7.sh up
+    export PATH="$HOME/.kubeadm-dind-cluster:$PATH"
+
 }
 
 function initial_setup() {
@@ -61,31 +72,69 @@ done
 
 echo "Creating Transaction Generator..."
 kubectl create -f transaction-generator.yaml
-sleep 5s
+echo "Waiting for pods to be running"
+i=0
+while [[ $(kubectl get pods | grep -c Running) -ne 4 ]]; do
+    if [[ ! "$i" -lt 24 ]]; then
+        echo "Timeout waiting on pods to be ready. Test FAILED"
+        exit 1
+    fi
+    sleep 10
+    echo "...$i * 10 seconds elapsed..."
+    ((i++))
+done
+echo "All pods are running"
+
 }
 
 function getting_ip_port() {
 echo "Getting IP and Port"
-IP=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{print $2}' | head -1)
-bx cs workers $CLUSTER_NAME
-NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+    IP=127.0.0.1
+    NODEPORT=8080/api/v1/namespaces/default/services/account-summary/proxy/
+    echo "This is a pull request. Not using a bluemix cluster"
+else
+    IP=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{print $2}' | head -1)
+    bx cs workers $CLUSTER_NAME
+    NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
+fi
 kubectl get svc | grep account-summary
 if [ -z "$IP" ] || [ -z "$NODEPORT" ]
 then
     echo "IP or NODEPORT not found"
     exit 1
 fi
+TRIES=0
+while true
+do
+code=$(curl -sw '%{http_code}' http://$IP:$NODEPORT -o /dev/null)
+    if [ "$code" = "200" ]; then
+        echo "Account Summary is up."
+        break
+    fi
+    if [ $TRIES -eq 10 ]
+    then
+        echo "Failed finding Account Summary. Error code is $code"
+        exit 1
+    fi
+    TRIES=$((TRIES+1))
+    sleep 5s
+done
+
 kubectl get pods,svc -l app=office-space
-echo "You can now view your account balance at http://$IP:$NODEPORT"
-echo "Everything seems to be working fine..."
-echo "Travis has finish its build. Cleaning up..."
+echo "Spring boot app found at http://$IP:$NODEPORT"
+echo "Travis has finished its build."
 }
 
 
-
-install_bluemix_cli
-bluemix_auth
-cluster_setup
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]];
+then
+    kube_adm_setup
+else
+    install_bluemix_cli
+    bluemix_auth
+    cluster_setup
+    clean_setup
+fi
 initial_setup
 getting_ip_port
-cluster_setup

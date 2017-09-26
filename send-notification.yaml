@@ -29,7 +29,7 @@ spec:
         tier: notification
     spec:
       containers:
-      - image: anthonyamanse/send-notification:1.0
+      - image: anthonyamanse/send-notification:v1
         imagePullPolicy: Always
         name: send-notification
         env:
