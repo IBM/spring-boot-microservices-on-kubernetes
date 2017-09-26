@@ -1,68 +1,69 @@
 ---
 stages:
-- name: BUILD
-  inputs:
-  - type: git
-    branch: master
-    service: ${SAMPLE_REPO}
-  triggers:
-  - type: commit
-  jobs:
-  - name: Build
-    type: builder
-    artifact_dir: ''
-    build_type: shell
-    script: |-
-      #!/bin/bash
-      bash -n *.sh
-- name: DEPLOY
-  inputs:
-  - type: job
-    stage: BUILD
-    job: Build
-    dir_name: null
-  triggers:
-  - type: stage
-  properties:
-  - name: BLUEMIX_USER
-    type: text
-    value: ${BLUEMIX_USER}
-  - name: BLUEMIX_PASSWORD
-    type: secure
-    value: ${BLUEMIX_PASSWORD}
-  - name: BLUEMIX_ACCOUNT
-    type: secure
-    value: ${BLUEMIX_ACCOUNT}
-  - name: CLUSTER_NAME
-    type: text
-    value: ${CLUSTER_NAME}
-  - name: API_KEY
-    type: secure
-    value: ${API_KEY}
-  - name: GMAIL_SENDER_USER
-    type: secure
-    value: ${GMAIL_SENDER_USER}
-  - name: GMAIL_SENDER_PASSWORD
-    type: secure
-    value: ${GMAIL_SENDER_PASSWORD}
-  - name: EMAIL_RECEIVER
-    type: secure
-    value: ${EMAIL_RECEIVER}
-  jobs:
-  - name: Deploy
-    type: deployer
-    target:
-      region_id: ${PROD_REGION_ID}
-      organization: ${PROD_ORG_NAME}
-      space: ${PROD_SPACE_NAME}
-      application: Pipeline
-    script: |
-      #!/bin/bash
-      . ./scripts/deploy-to-bluemix/install_bx.sh
-      ./scripts/deploy-to-bluemix/bx_login.sh
-      ./scripts/deploy-to-bluemix/deploy.sh
+  - name: BUILD
+    inputs:
+      - type: git
+        branch: toolchain-test
+        service: ${SAMPLE_REPO}
+    triggers:
+      - type: commit
+    jobs:
+      - name: Build
+        type: builder
+        artifact_dir: ''
+        build_type: shell
+        script: |-
+          #!/bin/bash
+          bash -n *.sh
+  - name: DEPLOY
+    inputs:
+      - type: job
+        stage: BUILD
+        job: Build
+        dir_name: null
+    triggers:
+      - type: stage
+    properties:
+      - name: BLUEMIX_USER
+        type: text
+        value: ${BLUEMIX_USER}
+      - name: BLUEMIX_PASSWORD
+        type: secure
+        value: ${BLUEMIX_PASSWORD}
+      - name: BLUEMIX_ACCOUNT
+        type: secure
+        value: ${BLUEMIX_ACCOUNT}
+      - name: CLUSTER_NAME
+        type: text
+        value: ${CLUSTER_NAME}
+      - name: API_KEY
+        type: secure
+        value: ${API_KEY}
+      - name: GMAIL_SENDER_USER
+        type: secure
+        value: ${GMAIL_SENDER_USER}
+      - name: GMAIL_SENDER_PASSWORD
+        type: secure
+        value: ${GMAIL_SENDER_PASSWORD}
+      - name: EMAIL_RECEIVER
+        type: secure
+        value: ${EMAIL_RECEIVER}
+    jobs:
+      - name: Deploy
+        type: deployer
+        target:
+          region_id: ${PROD_REGION_ID}
+          organization: ${PROD_ORG_NAME}
+          space: ${PROD_SPACE_NAME}
+          application: Pipeline
+        script: |
+          #!/bin/bash
+          . ./scripts/deploy-to-bluemix/install_bx.sh
+          ./scripts/deploy-to-bluemix/bx_login.sh
+          ./scripts/deploy-to-bluemix/deploy.sh
 hooks:
-- enabled: true
-  label: null
-  ssl_enabled: false
-  url: https://devops-api-integration.stage1.ng.bluemix.net/v1/messaging/webhook/publish
+  - enabled: true
+    label: null
+    ssl_enabled: false
+    url: |
+      https://devops-api-integration.stage1.ng.bluemix.net/v1/messaging/webhook/publish

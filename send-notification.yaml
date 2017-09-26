@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -29,21 +30,21 @@ spec:
         tier: notification
     spec:
       containers:
-      - image: anthonyamanse/send-notification:1.0
-        imagePullPolicy: Always
-        name: send-notification
-        env:
-        - name: GMAIL_SENDER_USER
-          value: 'username@gmail.com'
-        - name: GMAIL_SENDER_PASSWORD
-          value: 'password@gmail.com'
-        - name: EMAIL_RECEIVER
-          value: 'sendTo@gmail.com'
-        - name: OPENWHISK_API_URL_SLACK
-          value: ''
-        - name: SLACK_MESSAGE
-          value: 'Your balance is over $50,000.00'
-        - name: OPENWHISK_API_URL_EMAIL
-          value: ''
-        ports:
-        - containerPort: 8080
+        - image: anthonyamanse/send-notification:1.0
+          imagePullPolicy: Always
+          name: send-notification
+          env:
+            - name: GMAIL_SENDER_USER
+              value: 'username@gmail.com'
+            - name: GMAIL_SENDER_PASSWORD
+              value: 'password@gmail.com'
+            - name: EMAIL_RECEIVER
+              value: 'sendTo@gmail.com'
+            - name: OPENWHISK_API_URL_SLACK
+              value: ''
+            - name: SLACK_MESSAGE
+              value: 'Your balance is over $50,000.00'
+            - name: OPENWHISK_API_URL_EMAIL
+              value: ''
+          ports:
+            - containerPort: 8080

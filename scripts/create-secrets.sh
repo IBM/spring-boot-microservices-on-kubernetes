@@ -1,18 +1,18 @@
 #!/bin/bash
 
 echo "Enter MySQL username: "
-read username
+read -r username
 echo "Enter MySQL password: "
-read password
+read -r password
 echo "Enter MySQL host: "
-read host
+read -r host
 echo "Enter MySQL port: "
-read port
+read -r port
 
-ENC_username=$(echo $username | tr -d '\n' | base64)
-ENC_password=$(echo $password | tr -d '\n' | base64)
-ENC_host=$(echo $host | tr -d '\n' | base64)
-ENC_port=$(echo $port | tr -d '\n' | base64)
+ENC_username=$(echo "$username" | tr -d '\n' | base64)
+ENC_password=$(echo "$password" | tr -d '\n' | base64)
+ENC_host=$(echo "$host" | tr -d '\n' | base64)
+ENC_port=$(echo "$port" | tr -d '\n' | base64)
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1

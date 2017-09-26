@@ -2,15 +2,16 @@
 
 echo "Creating Office Space App"
 
-IP_ADDR=$(bx cs workers $CLUSTER_NAME | grep normal | awk '{ print $2 }' | head -1)
-if [ -z $IP_ADDR ]; then
+IP_ADDR=$(bx cs workers "$CLUSTER_NAME" | grep normal | awk '{ print $2 }' | head -1)
+if [ -z "$IP_ADDR" ]; then
   echo "$CLUSTER_NAME not created or workers not ready"
   exit 1
 fi
 
 echo -e "Configuring vars"
-exp=$(bx cs cluster-config $CLUSTER_NAME | grep export)
-if [ $? -ne 0 ]; then
+exp=$(bx cs cluster-config "$CLUSTER_NAME" | grep export)
+if bx cs cluster-config "$CLUSTER_NAME" -ne 0;
+then
   echo "Cluster $CLUSTER_NAME not created or not ready."
   exit 1
 fi
@@ -36,37 +37,27 @@ echo "Creating Spring Boot App..."
 kubectl create -f compute-interest-api.yaml
 sleep 5s
 
-if [[ -z $GMAIL_SENDER_USER ]] && [[ -z $GMAIL_SENDER_PASSWORD ]] && [[ -z $EMAIL_RECEIVER ]]
+if [[ -z "$GMAIL_SENDER_USER" ]] && [[ -z "$GMAIL_SENDER_PASSWORD" ]] && [[ -z "$EMAIL_RECEIVER" ]]
 then
     echo "Environment variables GMAIL_SENDER_USER, GMAIL_SENDER_PASSWORD, EMAIL_RECEIVER are not set. Notification service would not be deployed"
 else
     echo "Environment variables are changed, launching Notification service..."
-    sed -i s#username@gmail.com#$GMAIL_SENDER_USER# send-notification.yaml
-    sed -i s#password@gmail.com#$GMAIL_SENDER_PASSWORD# send-notification.yaml
-    sed -i s#sendTo@gmail.com#$EMAIL_RECEIVER# send-notification.yaml
+    sed -i s#username@gmail.com#"$GMAIL_SENDER_USER"# send-notification.yaml
+    sed -i s#password@gmail.com#"$GMAIL_SENDER_PASSWORD"# send-notification.yaml
+    sed -i s#sendTo@gmail.com#"$EMAIL_RECEIVER"# send-notification.yaml
     kubectl create -f send-notification.yaml
 fi
 sleep 5s
 
 echo "Creating Node.js Frontend..."
 kubectl create -f account-summary.yaml
-while [ $? -ne 0 ]
-do
-    sleep 1s
-    echo "Creating Node.js Frontend failed. Trying to recreate..."
-    COUNT=$(cat account-summary.yaml | grep 30080 | sed -e s#nodePort:## | xargs)
-    COUNTUP=$((COUNT+1))
-    sed -i s#$COUNT#$COUNTUP# account-summary.yaml
-    kubectl apply -f account-summary.yaml
-    echo $?
-done
 
 echo "Creating Transaction Generator..."
 kubectl create -f transaction-generator.yaml
 sleep 5s
 
 echo "Getting IP and Port"
-bx cs workers $CLUSTER_NAME
+bx cs workers "$CLUSTER_NAME"
 NODEPORT=$(kubectl get svc | grep account-summary | awk '{print $4}' | sed -e s#80:## | sed -e s#/TCP##)
 kubectl get svc | grep account-summary
 if [ -z "$NODEPORT" ]

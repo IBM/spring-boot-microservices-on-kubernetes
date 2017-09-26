@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -29,18 +30,18 @@ spec:
         tier: database
     spec:
       containers:
-      - image: mysql:5.6
-        name: account-database
-        env:
-          - name: MYSQL_USER
-            value: michaelbolton
-          - name: MYSQL_PASSWORD
-            value: password
-          - name: MYSQL_ROOT_PASSWORD
-            value: password
-          - name: MYSQL_DATABASE
-            value: dockercon2017
+        - image: mysql:5.6
+          name: account-database
+          env:
+            - name: MYSQL_USER
+              value: michaelbolton
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: dockercon2017
 
-        ports:
-        - containerPort: 3306
-          name: db
+          ports:
+            - containerPort: 3306
+              name: db

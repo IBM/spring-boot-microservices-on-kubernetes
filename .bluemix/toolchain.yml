@@ -5,15 +5,16 @@ version: 0.1
 image: data:image/svg+xml;base64,$file(toolchain.svg,base64)
 icon: data:image/svg+xml;base64,$file(icon.svg,base64)
 required:
- - deploy
- - sample-repo
+  - deploy
+  - sample-repo
 
 # Github repos
 sample-repo:
   service_id: githubpublic
   parameters:
     repo_name: "{{name}}"
-    repo_url: https://github.com/IBM/spring-boot-microservices-on-kubernetes.git
+    repo_url: |
+      https://github.com/AnthonyAmanse/spring-boot-microservices-on-kubernetes.git
     type: clone
     has_issues: false
 
@@ -24,26 +25,26 @@ sample-build:
     name: "{{name}}"
     ui-pipeline: true
     configuration:
-     content: $file(pipeline.yml)
-     env:
-      SAMPLE_REPO: "sample-repo"
-      CF_APP_NAME: "pipeline"
-      PROD_SPACE_NAME: "{{deploy.parameters.prod-space}}"
-      PROD_ORG_NAME: "{{deploy.parameters.prod-organization}}"
-      PROD_REGION_ID: "{{deploy.parameters.prod-region}}"
-      BLUEMIX_USER: "{{deploy.parameters.bluemix-user}}"
-      BLUEMIX_PASSWORD: "{{deploy.parameters.bluemix-password}}"
-      API_KEY: "{{deploy.parameters.bluemix-api-key}}"
-      BLUEMIX_ACCOUNT: "{{deploy.parameters.bluemix-cluster-account}}"
-      CLUSTER_NAME: "{{deploy.parameters.bluemix-cluster-name}}"
-      GMAIL_SENDER_USER: "{{deploy.parameters.gmail-sender-user}}"
-      GMAIL_SENDER_PASSWORD: "{{deploy.parameters.gmail-sender-password}}"
-      EMAIL_RECEIVER: "{{deploy.parameters.email-receiver}}"
-     execute: true
+      content: $file(pipeline.yml)
+      env:
+        SAMPLE_REPO: "sample-repo"
+        CF_APP_NAME: "pipeline"
+        PROD_SPACE_NAME: "{{deploy.parameters.prod-space}}"
+        PROD_ORG_NAME: "{{deploy.parameters.prod-organization}}"
+        PROD_REGION_ID: "{{deploy.parameters.prod-region}}"
+        BLUEMIX_USER: "{{deploy.parameters.bluemix-user}}"
+        BLUEMIX_PASSWORD: "{{deploy.parameters.bluemix-password}}"
+        API_KEY: "{{deploy.parameters.bluemix-api-key}}"
+        BLUEMIX_ACCOUNT: "{{deploy.parameters.bluemix-cluster-account}}"
+        CLUSTER_NAME: "{{deploy.parameters.bluemix-cluster-name}}"
+        GMAIL_SENDER_USER: "{{deploy.parameters.gmail-sender-user}}"
+        GMAIL_SENDER_PASSWORD: "{{deploy.parameters.gmail-sender-password}}"
+        EMAIL_RECEIVER: "{{deploy.parameters.email-receiver}}"
+      execute: true
     services: ["sample-repo"]
   hidden: [form, description]
 
-#Deployment
+# Deployment
 deploy:
   schema:
     $ref: deploy.json
