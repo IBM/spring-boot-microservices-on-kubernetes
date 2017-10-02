@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes.svg?branch=master)](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes)
+![Bluemix Deployments](https://metrics-tracker.mybluemix.net/stats/13404bda8d87a6eca2c5297511ae9a5e/badge.svg)
+
 # Build and deploy Java Spring Boot microservices on Kubernetes
 
 Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications.
@@ -18,7 +20,7 @@ If you want to deploy the Office Space app directly to Bluemix, click on 'Deploy
 
 > You will need to create your Kubernetes cluster first and make sure it is fully deployed in your Bluemix account.
 
-[![Create Toolchain](https://github.com/IBM/container-journey-template/blob/master/images/button.png)](https://console.ng.bluemix.net/devops/setup/deploy/)
+[![Create Toolchain](https://metrics-tracker.mybluemix.net/stats/13404bda8d87a6eca2c5297511ae9a5e/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/)
 
 Please follow the [Toolchain instructions](https://github.com/IBM/container-journey-template/blob/master/Toolchain_Instructions.md) to complete your toolchain and pipeline.
 
@@ -365,3 +367,17 @@ account-summary         10.10.10.74    <nodes>       80:30080/TCP               
 
 ## License
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+# Privacy Notice
+
+Sample Kubernetes Yaml file that includes this package may be configured to track deployments to [IBM Bluemix](https://www.bluemix.net/) and other Kubernetes platforms. The following information is sent to a [Deployment Tracker](https://github.com/IBM/metrics-collector-service) service on each deployment:
+
+* Kubernetes Cluster Provider(`Bluemix,Minikube,etc`)
+* Kubernetes Machine ID (`MachineID`)
+* Environment variables in this Kubernetes Job.
+
+This data is collected from the Kubernetes Job in the sample application's yaml file. This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to measure the usefulness of our examples so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
+
+## Disabling Deployment Tracking
+
+Please common out/remove the Kubernetes Job portion at the end of the `account-summary.yaml` file.
