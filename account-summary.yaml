@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -31,33 +32,33 @@ spec:
         tier: summary
     spec:
       containers:
-      - image: anthonyamanse/account-summary:secrets
-        imagePullPolicy: Always
-        name: account-summary
-        env:
-          - name: MYSQL_DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: username
-          - name: MYSQL_DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: password
-          - name: MYSQL_DB_HOST
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: host
-          - name: MYSQL_DB_PORT
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: port
-        ports:
-        - containerPort: 80
-          name: web
+        - image: anthonyamanse/account-summary:secrets
+          imagePullPolicy: Always
+          name: account-summary
+          env:
+            - name: MYSQL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: username
+            - name: MYSQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: password
+            - name: MYSQL_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: host
+            - name: MYSQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: port
+          ports:
+            - containerPort: 80
+              name: web
 ---
 apiVersion: batch/v1
 kind: Job
@@ -67,13 +68,15 @@ spec:
     metadata: {name: spring-boot-microservices-on-kubernetes-metrics}
     spec:
       containers:
-      - env:
-        - {name: config, value: '{"repository_id": "spring-boot-microservices-on-kubernetes",
-            "target_runtimes": ["Kubernetes Cluster", "OpenWhisk"], "target_services":
-            ["Compose for MySQL"], "event_id": "web", "event_organizer": "dev-journeys"}'}
-        image: journeycode/kubernetes:latest
-        imagePullPolicy: Always
-        name: spring-boot-microservices-on-kubernetes-metrics
-        resources:
-          limits: {cpu: 100m}
-      restartPolicy: Never
+        - env:
+            - {name: config, value: '{"repository_id": "spring-boot-
+                  microservices-on-kubernetes", "target_runtimes": ["Kubernetes
+                  Cluster", "OpenWhisk"], "target_services": ["Compose for
+                  MySQL"], "event_id": "web", "event_organizer": "dev-
+                  journeys"}'}
+          image: journeycode/kubernetes:latest
+          imagePullPolicy: Always
+          name: spring-boot-microservices-on-kubernetes-metrics
+          resources:
+            limits: {cpu: 100m}
+          restartPolicy: Never
