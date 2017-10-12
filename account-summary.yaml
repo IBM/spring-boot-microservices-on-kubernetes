@@ -59,3 +59,24 @@ spec:
           ports:
             - containerPort: 80
               name: web
+---
+apiVersion: batch/v1
+kind: Job
+metadata: {name: spring-boot-microservices-on-kubernetes-metrics}
+spec:
+  template:
+    metadata: {name: spring-boot-microservices-on-kubernetes-metrics}
+    spec:
+      containers:
+        - env:
+            - {name: config, value: '{"repository_id": "spring-boot-
+                  microservices-on-kubernetes", "target_runtimes": ["Kubernetes
+                  Cluster", "OpenWhisk"], "target_services": ["Compose for
+                  MySQL"], "event_id": "web", "event_organizer": "dev-
+                  journeys"}'}
+          image: journeycode/kubernetes:latest
+          imagePullPolicy: Always
+          name: spring-boot-microservices-on-kubernetes-metrics
+          resources:
+            limits: {cpu: 100m}
+          restartPolicy: Never
