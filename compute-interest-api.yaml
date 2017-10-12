@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -29,29 +30,29 @@ spec:
         tier: compute
     spec:
       containers:
-      - image: anthonyamanse/compute-interest-api:secrets
-        imagePullPolicy: Always
-        name: compute-interest-api
-        env:
-          - name: MYSQL_DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: username
-          - name: MYSQL_DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: password
-          - name: MYSQL_DB_HOST
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: host
-          - name: MYSQL_DB_PORT
-            valueFrom:
-              secretKeyRef:
-                name: demo-credentials
-                key: port
-        ports:
-        - containerPort: 8080
+        - image: anthonyamanse/compute-interest-api:secrets
+          imagePullPolicy: Always
+          name: compute-interest-api
+          env:
+            - name: MYSQL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: username
+            - name: MYSQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: password
+            - name: MYSQL_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: host
+            - name: MYSQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: port
+          ports:
+            - containerPort: 8080
