@@ -382,4 +382,4 @@ This data is collected from the Kubernetes Job in the sample application's yaml 
 
 ## Disabling Deployment Tracking
 
-Please common out/remove the Kubernetes Job portion at the end of the `account-summary.yaml` file.
+Please comment out/remove the Kubernetes Job portion at the end of the `account-summary.yaml` file.
