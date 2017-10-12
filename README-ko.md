@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes.svg?branch=master)](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes)
+![Bluemix Deployments](https://metrics-tracker.mybluemix.net/stats/13404bda8d87a6eca2c5297511ae9a5e/badge.svg)
+
 # 쿠버네티스에 자바 Spring Boot 애플리케이션 빌드 및 배포하기
 
 *Read this in other languages: [English](README.md).*
@@ -22,7 +24,7 @@ Office Spacee 앱을 직접 블루믹스에 배포하려면, 'Deploy to Bluemix'
 
 > 먼저 쿠버네티스 클러스터를 생성해야 합니다. 블루믹스 계정에 완전히 배포되었는지 확인하신 후에 진행하십시오.
 
-[![Create Toolchain](https://github.com/IBM/container-journey-template/blob/master/images/button.png)](https://console.ng.bluemix.net/devops/setup/deploy/)
+[![Create Toolchain](https://metrics-tracker.mybluemix.net/stats/13404bda8d87a6eca2c5297511ae9a5e/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/)
 
 툴체인과 파이프라인을 생성하려면 [Toolchain instructions](https://github.com/IBM/container-journey-template/blob/master/Toolchain_Instructions.md)을 참조하십시오.
 
@@ -100,7 +102,7 @@ Spring Boot 애플리케이션들을 수정하려면 Java 프로젝트와 닥커
 
 Spring Boot 마이크로서비스는 **Compute-Interest-API** 와 **Send-Notification** 입니다.
 
-**Compute-Interest-API**은 MySQL 데이터베이스를 사용하기위해 구성된 Spring Boot 앱입니다. 관련한 구성은 `spring.datasource.*`에 있는 application.properties에 위치해 있습니다. 
+**Compute-Interest-API**은 MySQL 데이터베이스를 사용하기위해 구성된 Spring Boot 앱입니다. 관련한 구성은 `spring.datasource.*`에 있는 application.properties에 위치해 있습니다.
 
 *compute-interest-api/src/main/resources/application.properties*
 ```
