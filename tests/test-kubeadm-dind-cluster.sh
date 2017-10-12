@@ -70,7 +70,7 @@ verify_deploy(){
 
 main(){
 
-    if [[ -z "$BLUEMIX_AUTH" ]]
+    if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]
     then
         if ! setup_dind-cluster; then
             test_failed
@@ -82,7 +82,7 @@ main(){
             test_passed
         fi
     else
-      echo -e "\033[0;33mBluemix Auth detected; not running kubeadm-dind-cluster test.\033[0m"
+      echo -e "\033[0;33mNot a Pull Request. Not running kubeadm-dind-cluster test.\033[0m"
       exit 0
     fi
 }
