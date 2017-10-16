@@ -3,7 +3,7 @@ stages:
   - name: BUILD
     inputs:
       - type: git
-        branch: toolchain-test
+        branch: master
         service: ${SAMPLE_REPO}
     triggers:
       - type: commit
@@ -65,5 +65,5 @@ hooks:
   - enabled: true
     label: null
     ssl_enabled: false
-    url: |
+    url: >-
       https://devops-api-integration.stage1.ng.bluemix.net/v1/messaging/webhook/publish
