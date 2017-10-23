@@ -3,8 +3,8 @@
 BLUEMIX_ORG="Developer Advocacy"
 BLUEMIX_SPACE="dev"
 
-if [[ -z "$BLUEMIX_AUTH" ]]; then
-    echo -e "\033[0;33mFork detected; not authenticating to Bluemix.\033[0m"
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+    echo -e "\033[0;33mPull Request detected; not authenticating to Bluemix.\033[0m"
     exit 0
 fi
 
