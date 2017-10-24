@@ -30,7 +30,7 @@ spec:
         tier: notification
     spec:
       containers:
-        - image: anthonyamanse/send-notification:1.0
+        - image: anthonyamanse/send-notification:v1
           imagePullPolicy: Always
           name: send-notification
           env:
@@ -42,7 +42,7 @@ spec:
               value: 'sendTo@gmail.com'
             - name: OPENWHISK_API_URL_SLACK
               value: ''
-            - name: SLACK_MESSAGE
+            - name: NOTIFICATION_MESSAGE
               value: 'Your balance is over $50,000.00'
             - name: OPENWHISK_API_URL_EMAIL
               value: ''

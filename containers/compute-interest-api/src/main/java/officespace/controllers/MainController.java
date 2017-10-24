@@ -25,7 +25,7 @@ import officespace.models.Transaction;
 public class MainController {
 
 
-  boolean emailSent = false;
+  boolean notificationSent = false;
   /**
    * Compute Interest and store remainder in an account that I control
    *
@@ -55,20 +55,20 @@ public class MainController {
 
       String interestResult = "The interest for this transaction is: " + String.format("%.2f", roundedInterest) + " and the remaining interest is: "+ remainingInterest + "\n";
 
-      // Calls the API in email-service. Email-service sends an email
-      // Email should only be sent when account balance is over $50,000 and only once.
-      if (updatedBalance > 50000 && emailSent == false ) {
+      // Calls the API in send-notification service. send-notification sends an email/slack notification
+      // Email/Slack should only be sent when account balance is over $50,000 and only once.
+      if (updatedBalance > 50000 && notificationSent == false ) {
         RestTemplate rest = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        String server = "http://send-notification:8080/email";
+        String server = "http://send-notification:8080/";
         headers.add("Content-Type", "application/json");
         headers.add("Accept", "*/*");
-        String json = "{}";
+        String json = "{\"balance\": \"" + String.format("%.2f", updatedBalance) + "\"}";
 
         HttpEntity<String> requestEntity = new HttpEntity<String>(json, headers);
-        ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
-        this.emailSent = true;
-        return responseEntity.getBody();
+        ResponseEntity<String> responseEntityEmail = rest.exchange(server + "email", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntitySlack = rest.exchange(server + "slack", HttpMethod.POST, requestEntity, String.class);
+        this.notificationSent = true;
       }
 
       return interestResult;
