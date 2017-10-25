@@ -69,21 +69,14 @@ verify_deploy(){
 }
 
 main(){
-
-    if [[ -z "$BLUEMIX_AUTH" ]]
-    then
-        if ! setup_dind-cluster; then
-            test_failed
-        elif ! kubectl_deploy; then
-            test_failed
-        elif ! verify_deploy; then
-            test_failed
-        else
-            test_passed
-        fi
+    if ! setup_dind-cluster; then
+        test_failed
+    elif ! kubectl_deploy; then
+        test_failed
+    elif ! verify_deploy; then
+        test_failed
     else
-      echo -e "\033[0;33mBluemix Auth detected; not running kubeadm-dind-cluster test.\033[0m"
-      exit 0
+        test_passed
     fi
 }
 

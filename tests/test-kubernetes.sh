@@ -74,7 +74,7 @@ verify_deploy(){
     for IP in $IPS; do
         while true
         do
-            code=$(curl -sw '%{http_code}' http://"$IP":"$NODEPORT" -o /dev/null)
+            code=$(curl -sw '%{http_code}' http://"$IP":30080 -o /dev/null)
             if [ "$code" = "200" ]; then
                 echo "Account Summary is up."
                 break
@@ -91,8 +91,8 @@ verify_deploy(){
 }
 
 main(){
-    if [[ -z "$BLUEMIX_AUTH" ]]; then
-        echo -e "\033[0;33mFork detected; not running Bluemix Container Service test.\033[0m"
+    if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+        echo -e "\033[0;33mPull Request detected. Not running Bluemix Container Service test.\033[0m"
         exit 0
     fi
 
