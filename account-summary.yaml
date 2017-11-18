@@ -74,6 +74,7 @@ spec:
               "target_runtimes": ["Kubernetes Cluster", "OpenWhisk"],
               "target_services": ["Compose for MySQL"],
               "event_id": "web", "event_organizer": "dev-journeys"}'}
+            - {name: language, value: 'java'}
           image: journeycode/kubernetes:latest
           imagePullPolicy: Always
           name: spring-boot-microservices-on-kubernetes-metrics
