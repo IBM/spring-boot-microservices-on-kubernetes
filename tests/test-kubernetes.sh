@@ -56,7 +56,7 @@ kubectl_deploy() {
 
     echo "Waiting for pods to be running"
     i=0
-    while [[ $(kubectl get pods -l app=offce-space | grep -c Running) -ne 4 ]]; do
+    while [[ $(kubectl get pods -l app=office-space | grep -c Running) -ne 4 ]]; do
         if [[ ! "$i" -lt 24 ]]; then
             echo "Timeout waiting on pods to be ready. Test FAILED"
             exit 1
