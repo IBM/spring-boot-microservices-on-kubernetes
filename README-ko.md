@@ -7,9 +7,7 @@
 
 Spring Boot은 널리 사용되는 자바 마이크로서비스 프레임워크 입니다. Spring Cloud는 Java 애플리케이션 스택의 일부로 런타임 문제를 해결할 수 있는 풍부한 통합 라이브러리를 갖고 있으며 쿠버네티스는 polyglot 마이크로서비스를 실행할 수 있는 풍부한 기능을 제공합니다. 이 두 기술은 서로를 보완하고 있으며 Spring Boot 애플리케이션을 위한 훌륭한 플랫폼을 만듭니다.
 
-이 코드에서는 쿠버네티스 위에 간단한 Spring Boot 애플리케이션을 배포하는 방법을 보여줍니다.  이 애플리케이션인 Office Space는 영화 [Office Space](http://www.imdb.com/title/tt0151804/)에 등장하는 Michael Bolton의 가상의 앱 아이디어를 모방한 것입니다. 이 앱은 일반적으로 별도의 은행 계좌로 반올림하는 1 센트의 분수를 전환함으로써 트랜젝션의 이자를 계산하는 금융 프로그램을 활용합니다.
-
-이 앱은 일반적으로 별도의 계좌로 반올림되는 소숫점 이하의 금액을 우회시키는 방법으로 트랜젝션에 대해 이자를 계산하는 금융 프로그램을 활용합니다.
+이 코드에서는 쿠버네티스 위에 간단한 Spring Boot 애플리케이션을 배포하는 방법을 보여줍니다.  이 애플리케이션인 Office Space는 영화 [Office Space](http://www.imdb.com/title/tt0151804/)에 등장하는 Michael Bolton의 가상의 앱 아이디어를 모방한 것입니다. 이 앱은 일반적으로 1센트 이하의 금액을 반올림 하는 방식 대신에 버림하여 별도의 은행 계좌에 저장하는 방식으로 이득을 취합니다.
 
 이 애플리케이션은 Java 8/Spring Boot 마이크로서비스를 사용하여 이자를 계산하고 소숫점 이하의 금액은 데이터베이스에 저장합니다. 또 다른 Spring Boot 마이크로서비스인 알림 서비스는 계좌의 잔액이 $50,000 이상이 되면 이메일을 전송합니다. 이는 이자를 계산하는 Spring Boot 웹서버에 의해 트리거 됩니다. 앱의 Frontend는 Node.js 기반으로 만들어졌고 Spring Boot 앱에 의해 쌓인 현재 계좌의 잔액을 보여줍니다. Backend는 MySQL 데이터 베이스를 사용하여 계좌 잔액을 저장합니다.
 
@@ -18,15 +16,6 @@ Spring Boot은 널리 사용되는 자바 마이크로서비스 프레임워크 
 ## 사전 준비 사항
 
 쿠버네티스 클러스터를 생성합니다. 로컬에서 테스트 하려면 [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube)에서, 클라우드에 배포하려면 [IBM Bluemix Container Service](https://github.com/IBM/container-journey-template)에서 생성합니다. 이 코드는 Travis를 사용하여 [Kubernetes Cluster from Bluemix Container Service](https://console.ng.bluemix.net/docs/containers/cs_ov.html#cs_ov)에서 정기적으로 테스트 합니다.
-
-## 블루믹스에 배포
-Office Spacee 앱을 직접 블루믹스에 배포하려면, 'Deploy to Bluemix' 버튼을 누루십시오. 이 샘플 애플리케이션을 배포할 수 있는 Bluemix DevOps 서비스 툴체인과 파이프라인이 생성됩니다. 아니면 [Steps](#steps)로 가십시오.
-
-> 먼저 쿠버네티스 클러스터를 생성해야 합니다. 블루믹스 계정에 완전히 배포되었는지 확인하신 후에 진행하십시오.
-
-[![Create Toolchain](https://metrics-tracker.mybluemix.net/stats/13404bda8d87a6eca2c5297511ae9a5e/button.svg)](https://console.ng.bluemix.net/devops/setup/deploy/)
-
-툴체인과 파이프라인을 생성하려면 [Toolchain instructions](https://github.com/IBM/container-journey-template/blob/master/Toolchain_Instructions.md)을 참조하십시오.
 
 ## Steps
 1. [데이터베이스 서비스 생성](#1-데이터베이스-서비스-생성)  
@@ -42,10 +31,6 @@ Office Spacee 앱을 직접 블루믹스에 배포하려면, 'Deploy to Bluemix'
 3. [Frontend 서비스 작성](#3-frontend-서비스-작성)  
 4. [트랜잭션 생성 서비스 작성](#4-트랜잭션-생성-서비스-작성)  
 5. [애플리케이션 접근](#5-애플리케이션-접근)
-
-https://github.com/hjjo/spring-boot-microservices-on-kubernetes/blob/master/README-ko.md#231-알림-서비스로-기본-이메일-서비스-사용-gmail
-
-https://github.com/hjjo/spring-boot-microservices-on-kubernetes/blob/master/README-ko.md#232-알림-서비스로-openwhisk-actions-사용
 
 #### [문제 해결](#문제-해결)
 
@@ -376,3 +361,17 @@ account-summary         10.10.10.74    <nodes>       80:30080/TCP               
 
 ## 라이센스
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+# 정보 사용 안내
+
+이 패키지가 포함 된 샘플 쿠버네티스 Yaml 파일은 [IBM Cloud](https://www.bluemix.net/) 및 기타 쿠버네티스 플랫폼에 대한 배치를 추적하도록 구성 될 수 있습니다. 다음 정보는 배포시마다 [배치 추적 서비스](https://github.com/IBM/metrics-collector-service)로 전송됩니다.:
+
+* 쿠버네티스 클러스터 제공자 (`Bluemix,Minikube 등`)
+* 쿠버네티스 Machine ID (`MachineID`)
+* 이 쿠버네티스 Job의 환경 변수
+
+이 데이터는 샘플 애플리케이션의 yaml 파일의 쿠버네티스 Job으로부터 수집됩니다. 이 데이터는 IBM에서 지속적으로 더 나은 컨텐츠를 제공하기 위해 사용됩니다. 예제의 유용성을 측정하기 위해 IBM Cloud로 배포되는 샘플 애플리케이션의 배포를 관련된 측정 항목을 추적하는데에 사용합니다.배포 추적 서비스를 핑하는 코드가 포함 된 샘플 응용 프로그램의 배포 만 추적됩니다.
+
+## 배포 추적 비활성화
+
+`account-summary.yaml` 파일의 끝 부분에 있는 쿠버네티스 Job 부분을 주석 처리 하거나 삭제하십시오.
