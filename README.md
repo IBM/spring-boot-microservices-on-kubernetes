@@ -104,6 +104,7 @@ spring.datasource.password = ${MYSQL_DB_PASSWORD}
 ```
 
 The `application.properties` is configured to use MYSQL_DB_* environment variables. These are defined in the `compute-interest-api.yaml` file.
+
 *compute-interest-api.yaml*
 ```yaml
 spec:
