@@ -3,7 +3,7 @@
 
 # Build and deploy Java Spring Boot microservices on Kubernetes
 
-*Read this in other languages: [한국어](README-ko.md).*
+*Read this in other languages: [한국어](README-ko.md)、[中国](README-cn.md).*
 
 Spring Boot is one of the popular Java microservices framework. Spring Cloud has a rich set of well integrated Java libraries to address runtime concerns as part of the Java application stack, and Kubernetes provides a rich featureset to run polyglot microservices. Together these technologies complement each other and make a great platform for Spring Boot applications.
 
