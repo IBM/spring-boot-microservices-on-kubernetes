@@ -10,6 +10,10 @@ curl -L https://public.dhe.ibm.com/cloud/bluemix/cli/bluemix-cli/latest/IBM_Clou
 tar -xvf Bluemix_CLI.tar.gz
 sudo ./Bluemix_CLI/install_bluemix_cli
 
+echo "Configuring bx to disable version check"
+bx config --check-version=false
+echo "Checking bx version"
+bx --version
 echo "Installing Bluemix container-service plugin"
 bx plugin install container-service -r Bluemix
 
