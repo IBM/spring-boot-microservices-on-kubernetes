@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes.svg?branch=master)](https://travis-ci.org/IBM/spring-boot-microservices-on-kubernetes)
-![Bluemix Deployments](https://metrics-tracker.mybluemix.net/stats/13404bda8d87a6eca2c5297511ae9a5e/badge.svg)
 
 # Build and deploy Java Spring Boot microservices on Kubernetes
 
@@ -362,17 +361,3 @@ account-summary         10.10.10.74    <nodes>       80:30080/TCP               
 
 ## License
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-# Privacy Notice
-
-Sample Kubernetes Yaml file that includes this package may be configured to track deployments to [IBM Bluemix](https://www.bluemix.net/) and other Kubernetes platforms. The following information is sent to a [Deployment Tracker](https://github.com/IBM/metrics-collector-service) service on each deployment:
-
-* Kubernetes Cluster Provider(`Bluemix,Minikube,etc`)
-* Kubernetes Machine ID (`MachineID`)
-* Environment variables in this Kubernetes Job.
-
-This data is collected from the Kubernetes Job in the sample application's yaml file. This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to measure the usefulness of our examples so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
-
-## Disabling Deployment Tracking
-
-Please comment out/remove the Kubernetes Job portion at the end of the `account-summary.yaml` file.
