@@ -10,7 +10,7 @@ services:
   - docker
 
 env:
-  - TEST_RUN="./tests/test-kubeadm-dind-cluster.sh"
+  - TEST_RUN="./tests/test-minikube.sh"
   - TEST_RUN="./tests/test-kubernetes.sh"
 
 before_install:
