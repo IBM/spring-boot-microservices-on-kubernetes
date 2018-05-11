@@ -9,18 +9,12 @@ os: linux
 services:
   - docker
 
-addons:
-  apt:
-    sources:
-      - debian-sid
-    packages:
-      - shellcheck
-
 env:
   - TEST_RUN="./tests/test-kubeadm-dind-cluster.sh"
   - TEST_RUN="./tests/test-kubernetes.sh"
 
 before_install:
+  - sudo apt-get install shellcheck
   - pip install yamllint
 
 install:
