@@ -48,26 +48,31 @@ public class TriggerEmail {
 		MimeMessageHelper helper = new MimeMessageHelper(mail);
 
 		try {
-			if (email_openwhisk_url.isEmpty()) {
-				helper.setTo(receiver);
-				helper.setFrom(sender);
-				helper.setReplyTo(sender);
-				helper.setSubject("Office-Space Notification");
-				helper.setText("Account Balance is now over $50,000. " + payload.get("balance"));
-				mailSender.send(mail);
-				return "{\"message\": \"OK sent email via client\"}";
-			}
-			else {
-				RestTemplate rest = new RestTemplate();
-				HttpHeaders headers = new HttpHeaders();
-				String server = email_openwhisk_url;
-				headers.add("Content-Type", "application/json");
-				headers.add("Accept", "*/*");
-				String json = "{\"text\": \"" + notification_message + ", " + payload.get("balance") + "\",\"sender\": \"" + sender + "\",\"receiver\": \"" + receiver + "\",\"password\": \"" + password + "\",\"subject\": \"Office-Space Notification\"}";
 
-				HttpEntity<String> requestEntity = new HttpEntity<String>(json, headers);
-				ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
-				return "{\"message\": \"OK sent email via openwhisk\"}";
+			if (!receiver.isEmpty() && !sender.isEmpty() && !password.isEmpty()) {
+				if (email_openwhisk_url.isEmpty()) {
+						helper.setTo(receiver);
+						helper.setFrom(sender);
+						helper.setReplyTo(sender);
+						helper.setSubject("Office-Space Notification");
+						helper.setText("Account Balance is now over $50,000. " + payload.get("balance"));
+						mailSender.send(mail);
+						return "{\"message\": \"OK sent email via client\"}";
+				}
+				else {
+					RestTemplate rest = new RestTemplate();
+					HttpHeaders headers = new HttpHeaders();
+					String server = email_openwhisk_url;
+					headers.add("Content-Type", "application/json");
+					headers.add("Accept", "*/*");
+					String json = "{\"text\": \"" + notification_message + ", " + payload.get("balance") + "\",\"sender\": \"" + sender + "\",\"receiver\": \"" + receiver + "\",\"password\": \"" + password + "\",\"subject\": \"Office-Space Notification\"}";
+
+					HttpEntity<String> requestEntity = new HttpEntity<String>(json, headers);
+					ResponseEntity<String> responseEntity = rest.exchange(server, HttpMethod.POST, requestEntity, String.class);
+					return "{\"message\": \"OK sent email via openwhisk\"}";
+				}
+			} else {
+				return "{\"message\": \"No email configuration specified. No email sent.\"}";
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
