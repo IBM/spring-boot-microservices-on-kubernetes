@@ -10,9 +10,30 @@ In this code we demonstrate how a simple Spring Boot application can be deployed
 
 The application uses a Java 8/Spring Boot microservice that computes the interest then takes the fraction of the pennies to a database. Another Spring Boot microservice is the notification service. It sends email when the account balance reach more than $50,000. It is triggered by the Spring Boot webserver that computes the interest. The frontend uses a Node.js app that shows the current account balance accumulated by the Spring Boot app. The backend uses a MySQL database to store the account balance.
 
+## Flow
+
 ![spring-boot-kube](images/architecture.png)
 
-## Prerequisite
+1. The Transaction Generator service written in Python simulates transactions and pushes them to the Compute Interest microservice.
+2. The Compute Interest microservice computes the interest and then moves the fraction of pennies to the MySQL database to be stored. The database can be running within a container in the same deployment or on a public cloud such as IBM Cloud.
+3. The Compute Interest microservice then calls the notification service to notify the user if an amount has been deposited in the user’s account.
+4. The Notification service uses IBM Cloud Function to send an email message to the user.
+5. Additionally, an IBM Cloud Function to send messages to Slack can also be invoked.
+6. The user retrieves the account balance by visiting the Node.js web interface.
+
+## Included Components
+
+* [IBM Cloud Kubernetes Service](https://console.bluemix.net/docs/containers/container_index.html): IBM Bluemix Container Service manages highly available apps inside Docker containers and Kubernetes clusters on the IBM Cloud.
+* [Compose for MySQL](https://console.ng.bluemix.net/catalog/services/compose-for-mysql): Probably the most popular open source relational database in the world.
+* [IBM Cloud Functions](https://console.ng.bluemix.net/openwhisk): Execute code on demand in a highly scalable, serverless environment.
+
+## Featured Technologies
+
+* [Container Orchestration](https://www.ibm.com/cloud/container-service): Automating the deployment, scaling and management of containerized applications.
+* [Databases](https://en.wikipedia.org/wiki/IBM_Information_Management_System#.22Full_Function.22_databases): Repository for storing and managing collections of data.
+* [Serverless](https://www.ibm.com/cloud/functions): An event-action platform that allows you to execute code in response to an event.
+
+# Prerequisite
 
 * Create a Kubernetes cluster with either [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube) for local testing, [IBM Cloud Private](https://github.com/IBM/Kubernetes-container-service-GitLab-sample/blob/master/docs/deploy-with-ICP.md), or with [IBM Cloud Kubernetes Service](https://github.com/IBM/container-journey-template) to deploy in cloud. The code here is regularly tested against [Kubernetes Cluster from IBM Cloud](https://console.ng.bluemix.net/docs/containers/cs_ov.html#cs_ov) using Travis.
 
