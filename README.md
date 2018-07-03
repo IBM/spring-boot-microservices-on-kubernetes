@@ -253,7 +253,7 @@ Take note of your API URLs. You are going to use them later.
 Test endpoint for **Slack Notification**. Replace the URL with your own API URL.
 
 ```bash
-$ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
+$ curl -X POST -H 'Content-type: application/json' -d '{ "text": "Hello from OpenWhisk" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/slack
 ```
 
 ![Slack Notification](images/slackNotif.png)
@@ -261,7 +261,7 @@ $ curl -X POST -d '{ "text": "Hello from OpenWhisk" }' https://service.us.apicon
 Test endpoint for **Gmail Notification**. Replace the URL with your own API URL. Replace the value of the parameters **sender, password, receiver, subject** with your own.
 
 ```bash
-$ curl -X POST -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
+$ curl -X POST -H 'Content-type: application/json' -d '{ "text": "Hello from OpenWhisk", "subject": "Email Notification", "sender": "testemail@gmail.com", "password": "passwordOfSender", "receiver": "receiversEmail" }' https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/.../v1/email
 ```
 ![Email Notification](images/emailNotif.png)
 
