@@ -321,7 +321,7 @@ deployment "transaction-generator" created
 ```
 
 ### 6. Access Your Application
-You can access your app publicly through your Cluster IP and the NodePort. The NodePort should be **30080**.
+You can access your app publicly through your Public IP and the NodePort. The NodePort should be **30080**.
 
 * To find your IP:
 ```bash
@@ -338,7 +338,7 @@ NAME                    CLUSTER-IP     EXTERNAL-IP   PORT(S)                    
 account-summary         10.10.10.74    <nodes>       80:30080/TCP                                                                 2d
 ...
 ```
-* On your browser, go to `http://<your-cluster-IP>:30080`
+* On your browser, go to `http://<your-public-IP>:30080`
 ![Account-balance](images/balance.png)
 
 ## Troubleshooting
